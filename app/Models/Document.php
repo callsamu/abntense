@@ -17,9 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $title
  * @property \ArrayObject $metadata
  * @property array $content
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $collaborators
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $collaborators_count
- * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\DocumentFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Document newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Document newQuery()
@@ -49,12 +48,8 @@ class Document extends Model
         ];
     }
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
-    public function collaborators(): BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'collaborators');
     }
