@@ -17,7 +17,11 @@ class DatabaseSeeder extends Seeder
     {
         $user = User::factory()
             ->hasAttached(
-                Document::factory(3),
+                Document::factory(3)
+                    ->hasAttached(
+                        User::factory(2)->create(),
+                        ['role' => Document::ROLE_EDITOR]
+                    ),
                 ['role' => Document::ROLE_OWNER]
             )->create([
                 'name' => 'Test User',
