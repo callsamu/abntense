@@ -21,15 +21,20 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
        $id = Auth::id();
        $documents = Document::with('users')
            ->find($id)
-           ->get()
+           ->get();
+
+       $docs = $documents
            ->map(fn ($document) => [
                'title' => $document->title,
-               'collaborators' => $document->users->pluck('name')->toArray(),
+               'users' => $document
+                   ->users
+                   ->pluck('name')
+                   ->map(fn ($name) => ['name' => $name]),
                'updated_at' => $document->updated_at->diffForHumans(),
            ]);
 
         return Inertia::render('Dashboard', [
-            'documents' => $documents
+            'documents' => $docs,
         ]);
     })->name('dashboard');
 

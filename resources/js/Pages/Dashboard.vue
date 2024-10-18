@@ -2,14 +2,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
-interface Document {
-    title: string;
-    collaborators: string[];
-    updated_at: string;
-}
-
 interface Props {
-    documents: Document;
+    documents: Document[];
+};
+
+function collaborators(doc: Document) {
+    return doc.users.map(user => user.name).join(', ');
 }
 
 const props = defineProps<Props>();
@@ -43,12 +41,12 @@ const props = defineProps<Props>();
                                 bg-neutral-900 w-80 p-6 rounded-xl
                                 flex flex-col justify-center
                             "
-                            v-for="document in props.documents"
+                            v-for="doc in props.documents"
                         >
-                            <h3 class="text-xl font-bold mb-2"> {{ document.title }}</h3>
-                            <p class="text-sm">{{ document.collaborators.join(', ') }}</p>
+                            <h3 class="text-xl font-bold mb-2"> {{ doc.title }}</h3>
+                            <p class="text-sm">{{ collaborators(doc) }}</p>
                             <div class="flex justify-between items-center my-3">
-                                <p class="text-sm opacity-60">Última Alteração <br> {{ document.updated_at }}</p>
+                                <p class="text-sm opacity-60">Última Alteração <br> {{ doc.updated_at }}</p>
                                 <div>
                                     Editar
                                 </div>

@@ -1,3 +1,4 @@
+import { JSONContent } from '@tiptap/core';
 import { Config } from 'ziggy-js';
 
 export interface User {
@@ -5,6 +6,18 @@ export interface User {
     name: string;
     email: string;
     email_verified_at?: string;
+    role: string;
+}
+
+export interface AbntMetadata {
+}
+
+export interface Document {
+    id: number;
+    title: string;
+    metadata: AbntMetadata;
+    content: JSONContent;
+    users: User[];
 }
 
 export type PageProps<
