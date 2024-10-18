@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Document;
-use App\Models\User;
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,22 +16,26 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    $id = Auth::id();
+Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::get('/dashboard', function () {
+       $id = Auth::id();
+       $documents = Document::with('users')
+           ->find($id)
+           ->get()
+           ->map(fn ($document) => [
+               'title' => $document->title,
+               'collaborators' => $document->users->pluck('name')->toArray(),
+               'updated_at' => $document->updated_at->diffForHumans(),
+           ]);
 
-    $documents = Document::with('users')
-        ->find($id)
-        ->get()
-        ->map(fn ($document) => [
-            'title' => $document->title,
-            'collaborators' => $document->users->pluck('name')->toArray(),
-            'updated_at' => $document->updated_at->diffForHumans(),
+        return Inertia::render('Dashboard', [
+            'documents' => $documents
         ]);
+    })->name('dashboard');
 
-    return Inertia::render('Dashboard', [
-        'documents' => $documents
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+    Route::get('/document/{id}', [DocumentController::class, 'edit'])
+        ->name('document.edit');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

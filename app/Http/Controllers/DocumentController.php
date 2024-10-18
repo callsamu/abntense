@@ -2,9 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Document;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DocumentController extends Controller
 {
-    //
+    public function edit(string $id): Response
+    {
+        $document = Document::findOrFail($id);
+
+        return Inertia::render('Document/Edition', [
+            'document' => $document
+        ]);
+    }
 }
