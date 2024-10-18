@@ -12,9 +12,10 @@ export interface User {
 export interface AbntMetadata {
 }
 
-export interface Document {
+export interface DocumentData {
     id: number;
     title: string;
+    updated_at: string;
     metadata: AbntMetadata;
     content: JSONContent;
     users: User[];

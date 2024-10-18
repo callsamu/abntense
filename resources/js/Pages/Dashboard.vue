@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { DocumentData } from '@/types';
 import { Head } from '@inertiajs/vue3';
 
 interface Props {
-    documents: Document[];
+    documents: DocumentData[];
 };
 
-function collaborators(doc: Document) {
+function collaborators(doc: DocumentData) {
     return doc.users.map(user => user.name).join(', ');
 }
 
