@@ -20,7 +20,7 @@ const props = defineProps<Props>();
     <AuthenticatedLayout>
         <template #header>
             <h2
-                class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200"
+                class="text-xl font-semibold leading-tight text-neutral-800 dark:text-neutral-200"
             >
                 Dashboard
             </h2>
@@ -29,18 +29,18 @@ const props = defineProps<Props>();
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div
-                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"
+                    class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-neutral-800"
                 >
-                    <div class="p-6 text-gray-900 dark:text-gray-100 w-full flex flex-wrap gap-4">
+                    <div class="p-6 text-neutral-900 dark:text-neutral-100 w-full flex flex-wrap gap-4">
                         <div
-                            class="bg-gray-900 w-80 h-60 flex justify-center items-center rounded-xl"
+                            class="bg-neutral-900 w-80 h-60 flex justify-center items-center rounded-xl"
 
                         >
                             <h2 class="text-3xl font-bold">+ Novo</h2>
                         </div>
                         <div
                             class="
-                                bg-gray-900 w-80 p-6 rounded-xl
+                                bg-neutral-900 w-80 p-6 rounded-xl
                                 flex flex-col justify-center
                             "
                             v-for="document in props.documents"
