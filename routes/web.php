@@ -39,8 +39,10 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         ]);
     })->name('dashboard');
 
-    Route::get('/document/{id}', [DocumentController::class, 'edit'])
-        ->name('document.edit');
+    Route::prefix("/documents")->group(function () {
+        Route::get('/{id}', [DocumentController::class, 'edit'])
+            ->name('document.edit');
+    });
 });
 
 Route::middleware('auth')->group(function () {
