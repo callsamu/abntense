@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
                     ),
                 ['role' => Document::ROLE_OWNER]
             )->create([
-                'name' => 'Test User',
+                'name' => 'John Doe',
                 'email' => 'test@example.com',
             ]);
 
