@@ -12,7 +12,7 @@ class DocumentController extends Controller
     {
         $document = Document::findOrFail($id);
 
-        return Inertia::render('DocumentEdit', [
+        return Inertia::render('Document/EditorView', [
             'document' => [
                 'title' => $document->title,
                 'content' => $document->content,
