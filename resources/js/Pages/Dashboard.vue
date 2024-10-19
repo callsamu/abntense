@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { DocumentData } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 interface Props {
     documents: DocumentData[];
@@ -49,7 +49,9 @@ const props = defineProps<Props>();
                             <div class="flex justify-between items-center my-3">
                                 <p class="text-sm opacity-60">Última Alteração <br> {{ doc.updated_at }}</p>
                                 <div>
+                                    <Link :href="`/document/${doc.id}`" class="text-sm text-neutral-600 underline hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100">
                                     Editar
+                                    </Link>
                                 </div>
                             </div>
                         </div>

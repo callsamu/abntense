@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
        $docs = $documents
            ->map(fn ($document) => [
+               'id' => $document->id,
                'title' => $document->title,
                'users' => $document
                    ->users
