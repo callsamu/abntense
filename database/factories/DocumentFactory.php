@@ -16,13 +16,41 @@ class DocumentFactory extends Factory
      */
     public function definition(): array
     {
+        $content = [
+            "type" => "doc",
+            "content" => [
+                [
+                    "type" => "paragraph",
+                    "content" => [
+                        [
+                            "type" => "text",
+                            "text" => $this->faker->paragraph(2)
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
         return [
             'title' => $this->faker->sentence(3),
             'metadata' => [
                 'local' => $this->faker->word(),
                 'description' => $this->faker->paragraph(3),
             ],
-            'content' => [],
+            'content' => [
+                "type" => "doc",
+                "content" => [
+                    [
+                        "type" => "paragraph",
+                        "content" => [
+                            [
+                                "type" => "text",
+                                "text" => $this->faker->paragraph(2)
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ];
     }
 }
