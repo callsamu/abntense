@@ -47,6 +47,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
         Route::inertia('/create', 'Document/Create')
             ->name('document.create');
+
+        Route::post('/create', [DocumentController::class, 'create'])
+            ->name('document.create');
     });
 });
 
