@@ -4,6 +4,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Document;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,9 +40,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         ]);
     })->name('dashboard');
 
-    Route::prefix("/documents")->group(function () {
+    Route::prefix("documents")->group(function () {
         Route::get('/{id}', [DocumentController::class, 'edit'])
+            ->whereNumber('id')
             ->name('document.edit');
+
+        Route::inertia('/create', 'Document/Create')
+            ->name('document.create');
     });
 });
 

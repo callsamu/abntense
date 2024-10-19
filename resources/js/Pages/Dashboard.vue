@@ -31,12 +31,15 @@ const props = defineProps<Props>();
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-neutral-800"
                 >
                     <div class="p-6 text-neutral-900 dark:text-neutral-100 w-full flex justify-between flex-wrap gap-10">
-                        <div
-                            class="bg-neutral-900 w-80 h-60 flex justify-center items-center rounded-xl"
-
+                        <Link
+                            :href="route('document.create')"
                         >
-                            <h2 class="text-3xl font-bold">+ Novo</h2>
-                        </div>
+                            <button
+                                class="bg-neutral-900 w-80 h-60 flex justify-center items-center rounded-xl cursor-pointer"
+                            >
+                                <h2 class="text-3xl font-bold">+ Novo</h2>
+                            </button>
+                        </Link>
                         <div
                             class="
                                 bg-neutral-900 w-80 p-6 rounded-xl
