@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- *
- *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -30,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Document whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Document whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @mixin IdeHelperDocument
  */
 class Document extends Model
 {
