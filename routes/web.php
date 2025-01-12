@@ -50,6 +50,12 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
         Route::post('/create', [DocumentController::class, 'create'])
             ->name('document.create');
+
+        Route::patch('/{id}', [DocumentController::class, 'update'])
+            ->whereNumber('id')
+            ->name('document.update');
+
+        Route::post('/compile/{id}', [DocumentController::class, 'compile']);
     });
 });
 

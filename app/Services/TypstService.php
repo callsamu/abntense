@@ -2,58 +2,81 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Self_;
 
 class TypstService
 {
+    private static function textify_node($node) {
+        ['text' => $text] = $node;
+        $marks = $node['marks'] ?? [];
+
+        $open = "";
+
+        foreach ($marks as $mark) {
+            $open .= match ($mark['type']) {
+                'bold' => "*",
+                'italic' => "_",
+            };
+       }
+
+        $close = Str::reverse($open);
+
+        return $open . $text . $close;
+    }
+
+    private static function convert_node($node) {
+        $type = $node['type'];
+
+        if ($type === 'text') {
+            return Self::textify_node($node);
+        }
+
+        $attrs = $node['attrs'] ?? [];
+        $contents = $node['content'];
+
+        $template = match ($type) {
+            'doc' => "$$",
+            'heading' => sprintf("#heading(level: %d)[$$]\n", $attrs['level']),
+            'paragraph' => "#par[$$]\n",
+        };
+
+        $text_content = "";
+
+        foreach ($contents as $child) {
+            $text_content .= Self::convert_node($child);
+        }
+
+        return str_replace("$$", $text_content, $template);
+    }
+
     public function fromTiptap(Array $content)
     {
-        function textify($node) {
-            [
-                'text' => $text,
-                'marks' => $marks,
-            ] = $node;
+        $document = Self::convert_node($content);
+        return Str::trim($document);
+    }
 
-            $open = "";
+    public function compile($id, $document) {
+        $typ_file = $id . ".typ";
+        Storage::put($typ_file, $document);
+        $path = Storage::path($typ_file);
 
-            foreach ($marks as $mark) {
-                $open .= match ($mark['type']) {
-                    'bold' => "*",
-                    'italic' => "_",
-                };
-           }
+        $command = sprintf("typst compile --format pdf %s -", $path, $id);
+        $result = Process::run($command);
 
-            $close = Str::reverse($open);
-
-            return $open . $text . $close;
+        if ($result->failed()) {
+            throw new \Exception(
+                "Unable to compile document: " .
+                $result->errorOutput()
+            );
         }
 
-        function recurse($node) {
-            [
-                'type' => $type,
-                'attrs' => $attrs,
-                'content' => $contents
-            ] = $node;
+        $pdf_file= $id . ".pdf";
+        Storage::put($pdf_file, $result->output());
+        $pdf_path = Storage::path($pdf_file);
 
-            if ($type === 'text') {
-                return textify($node);
-            }
-
-            $template = match ($type) {
-                'doc' => "$$",
-                'heading' => sprintf("#heading(level: %d)[$$]\n", $attrs['level']),
-                'paragraph' => "#par[$$]\n",
-            };
-
-            $text_content = "";
-
-            foreach ($contents as $child) {
-                $text_content .= recurse($child);
-            }
-
-            return str_replace("$$", $text_content, $template);
-        }
-
-        return Str::trim(recurse($content));
+        return $pdf_path;
     }
 }

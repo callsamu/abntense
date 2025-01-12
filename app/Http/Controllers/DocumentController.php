@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Services\TypstService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class DocumentController extends Controller
 {
@@ -26,7 +28,7 @@ class DocumentController extends Controller
         return to_route('document.edit', [$document]);
     }
 
-    public function edit(string $id): Response
+    public function edit(string $id)
     {
         $document = Document::findOrFail($id);
 
@@ -36,5 +38,21 @@ class DocumentController extends Controller
                 'content' => $document->content,
             ],
         ]);
+    }
+
+    public function update(string $id, Request $request)
+    {
+        $document = Document::findOrFail($id);
+        $document->content = $request->input('content');
+        $document->save();
+        return $document;
+    }
+
+    public function compile(string $id, TypstService $typst)
+    {
+        $document = Document::findOrFail($id);
+        $input = $typst->fromTiptap($document->content);
+        $pdf = $typst->compile($id, $input);
+        return response()->file($pdf);
     }
 }

@@ -1,0 +1,19 @@
+<?php
+
+use App\Models\Document;
+use App\Models\User;
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\post;
+
+test('example', function () {
+    $response = $this->get('/');
+
+    $user = User::factory()->create();
+    $doc = Document::factory()->create();
+    $doc->users()->attach($user->id, ['role' => Document::ROLE_OWNER]);
+
+    $response = actingAs($user)->post('/documents/compile/' . $doc->id);
+    $response->assertStatus(200);
+    $response->assertHeader('Content-Type', 'application/pdf');
+});
