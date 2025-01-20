@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\Types\Self_;
 
 class TypstService
 {
@@ -28,6 +28,7 @@ class TypstService
     }
 
     private static function convert_node($node) {
+        Log::info($node);
         $type = $node['type'];
 
         if ($type === 'text') {
@@ -35,7 +36,10 @@ class TypstService
         }
 
         $attrs = $node['attrs'] ?? [];
-        $contents = $node['content'];
+        $contents = $node['content'] ?? [];
+        if (empty($contents)) {
+            return "";
+        }
 
         $template = match ($type) {
             'doc' => "$$",
