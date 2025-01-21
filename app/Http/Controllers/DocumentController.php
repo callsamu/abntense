@@ -34,6 +34,7 @@ class DocumentController extends Controller
 
         return Inertia::render('Document/EditorView', [
             'document' => [
+                'id' => $document->id,
                 'title' => $document->title,
                 'content' => $document->content,
             ],
@@ -43,9 +44,11 @@ class DocumentController extends Controller
     public function update(string $id, Request $request)
     {
         $document = Document::findOrFail($id);
-        $document->content = $request->input('content');
+        $input = $request->input('document');
+        $document->content = $input;
         $document->save();
-        return $document;
+
+        return "ok";
     }
 
     public function compile(string $id, TypstService $typst)

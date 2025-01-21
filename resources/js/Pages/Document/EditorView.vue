@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { defineProps, ref, useTemplateRef, watch } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import { DocumentData } from '@/types';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import * as pdfJs from 'pdfjs-dist';
+import axios from 'axios';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+
+pdfJs.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.min.mjs';
 
 interface Props {
     document: DocumentData;
@@ -16,33 +22,105 @@ const editor = useEditor({
     content: props.document.content,
     extensions: [StarterKit],
 })
+
+const container = useTemplateRef<HTMLDivElement>('pdf-viewer');
+const pdf = ref<string | null>(null);
+
+
+watch(pdf, async (newPdf) => {
+    if (!container.value) return;
+
+
+    const containerRef = container.value;
+    containerRef.innerHTML = '';
+    const pdfDoc = await pdfJs.getDocument(newPdf).promise;
+
+    const page = await pdfDoc.getPage(1);
+    const viewport = page.getViewport({ scale: 0.75 });
+
+    const pageNumber = pdfDoc.numPages;
+
+    for (let i = 0; i < pageNumber; i++) {
+        const newCanvas = document.createElement('canvas');
+        newCanvas.width = viewport.width;
+        newCanvas.height = viewport.height;
+
+        const context = newCanvas.getContext('2d');
+        if (!context) continue;
+        const visiblePage = await pdfDoc.getPage(i + 1);
+        visiblePage.render({ canvasContext: context, viewport });
+
+        containerRef.appendChild(newCanvas);
+    }
+});
+
+async function save() {
+    console.info(props.document);
+    console.log(editor.value?.getJSON());
+    return axios.patch(route('document.update', props.document.id), {
+        document: editor.value?.getJSON(),
+    });
+}
+
+async function compile() {
+    const resp = await axios.get(route('document.compile', props.document.id), {
+        responseType: 'arraybuffer',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/pdf'
+        }
+    });
+
+    const blob = new Blob([resp.data]);
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => {
+        pdf.value = reader.result as string;
+    }
+}
+
 </script>
 <template>
     <Head :title=props.document.title />
-
-    <AuthenticatedLayout>
-        <div class="
-            flex justify-center items-center w-full
-            overflow-y-scroll my-10
-
-            text-white
-        ">
-            <div class="max-w-2xl">
-                <h2 class="text-4xl py-2 mb-6 font-bold border-b border-neutral-700">
-                    {{ props.document.title }}
-                </h2>
+    <div class="h-screen bg-neutral-100 dark:bg-neutral-900">
+        <div class="flex justify-center items-stretch h-full text-white">
+            <div className="w-2/5 p-5 h-full flex items-stretch flex-col overflow-y-scroll">
+                <div class="flex flex-col border-b border-neutral-700 py-3">
+                    <h2 class="text-4xl mb-6 font-bold">
+                        {{ props.document.title }}
+                    </h2>
+                    <div class="flex gap-3">
+                        <PrimaryButton @click="save()">
+                           Save
+                        </PrimaryButton>
+                        <PrimaryButton @click="save().then(compile)">
+                            Preview
+                        </PrimaryButton>
+                    </div>
+                </div>
                 <editor-content
+                    class="overflow-y-scroll flex-grow py-4 pr-4"
                     :editor="editor"
                     spellcheck="false"
                 />
             </div>
+            <div class="
+                bg-neutral-950 overflow-y-scroll
+                border rounded-xl border-neutral-800 my-5
+                flex flex-col
+            " :class="{ 'hidden': pdf === null }">
+                <div class="bg-neutral-900 border-b border-neutral-800 rounded-t-xl p-4 flex justify-end">
+                    <SecondaryButton @click="pdf = null">Close</SecondaryButton>
+                </div>
+                <div ref="pdf-viewer" class="overflow-y-scroll p-10 flex-grow"></div>
+            </div>
         </div>
-    </AuthenticatedLayout>
+    </div>
 </template>
 
 <style>
     .tiptap {
-        height: 100vh;
+        height: fit;
         color: white;
         overflow-y: scroll;
         outline: none;

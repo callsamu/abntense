@@ -55,7 +55,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
             ->whereNumber('id')
             ->name('document.update');
 
-        Route::post('/compile/{id}', [DocumentController::class, 'compile']);
+        Route::get('/compile/{id}', [DocumentController::class, 'compile'])
+            ->whereNumber('id')
+            ->name('document.compile');
     });
 });
 
