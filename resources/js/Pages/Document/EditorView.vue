@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { defineProps, ref, useTemplateRef, watch } from 'vue'
-import { Head } from '@inertiajs/vue3'
+import { Head, router } from '@inertiajs/vue3'
 import { DocumentData } from '@/types';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import * as pdfJs from 'pdfjs-dist';
 import axios from 'axios';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import NavLink from '@/Components/NavLink.vue';
 
 pdfJs.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.min.mjs';
 
@@ -82,8 +83,15 @@ async function compile() {
 </script>
 <template>
     <Head :title=props.document.title />
-    <div class="h-screen bg-neutral-100 dark:bg-neutral-900">
-        <div class="flex justify-center items-stretch h-full text-white">
+    <div class="h-screen bg-neutral-100 dark:bg-neutral-900 flex">
+        <div class="h-full w-fit bg-neutral-800 px-2 py-1">
+            <NavLink class="border-none" :href="route('dashboard')">
+                <SecondaryButton class="border-none">
+                    Voltar
+                </SecondaryButton>
+            </NavLink>
+        </div>
+        <div class="flex flex-grow justify-center items-stretch h-full text-white">
             <div className="w-2/5 p-5 h-full flex items-stretch flex-col overflow-y-scroll">
                 <div class="flex flex-col border-b border-neutral-700 py-3">
                     <h2 class="text-4xl mb-6 font-bold">
