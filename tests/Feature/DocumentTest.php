@@ -13,7 +13,7 @@ test('example', function () {
     $doc = Document::factory()->create();
     $doc->users()->attach($user->id, ['role' => Document::ROLE_OWNER]);
 
-    $response = actingAs($user)->post('/documents/compile/' . $doc->id);
+    $response = actingAs($user)->get('/documents/compile/' . $doc->id);
     $response->assertStatus(200);
     $response->assertHeader('Content-Type', 'application/pdf');
 });
