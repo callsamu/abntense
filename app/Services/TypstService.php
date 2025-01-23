@@ -2,13 +2,34 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class TypstService
 {
+    private $pretextual_elements = [
+        'Agradecimentos',
+        'Resumo'
+    ];
+
+    private static $TYPST_TEMPLATE = <<<'EOT'
+        #set text(font: "Liberation Sans", size: 12pt)
+        #set page(margin: (
+            top: 3cm,
+            left: 3cm,
+            right: 2cm,
+            bottom: 2cm,
+        ))
+        #set par(
+          justify: true,
+          first-line-indent: 1.25cm,
+          leading: 0.7811699164em,
+        )
+
+        {{ $content }}
+    EOT;
+
     private static function textify_node($node) {
         ['text' => $text] = $node;
         $marks = $node['marks'] ?? [];
@@ -27,8 +48,7 @@ class TypstService
         return $open . $text . $close;
     }
 
-    private static function convert_node($node) {
-        Log::info($node);
+    static function convert_node($node) {
         $type = $node['type'];
 
         if ($type === 'text') {
@@ -56,10 +76,55 @@ class TypstService
         return str_replace("$$", $text_content, $template);
     }
 
-    public function fromTiptap(Array $content)
-    {
-        $document = Self::convert_node($content);
-        return Str::trim($document);
+    static function pretextual(string $name, Array $nodes, int &$idx) {
+        $content = "";
+
+        while (($idx + 1) < count($nodes)) {
+            $node = $nodes[$idx + 1];
+
+            if (
+                ($idx + 1 >= count($nodes)) ||
+                ($node['type'] === 'heading' && $node['content'])
+            ) {
+                $text = $node['content'][0]['text'];
+                if ($text !== $name) break;
+            }
+
+            $content .= Self::convert_node($node);
+            $idx++;
+        }
+
+        return sprintf("#pretextual(\"%s\")[\n%s]\n", $name, $content);
+    }
+
+    public function fromTiptap(Array $document)  {
+        $text = "";
+        $in_pretext = true;
+
+        if (!$document['content']) {
+            return $text;
+        }
+
+        $nodes = $document['content'];
+
+        for ($i = 0; $i < count($nodes); $i++) {
+            $node = $nodes[$i];
+
+            if ($in_pretext && $node['type'] === 'heading' && $node['content']) {
+                $node_text = $node['content'][0]['text'];
+
+                if (in_array($node_text, $this->pretextual_elements)) {
+                    $text .= Self::pretextual($node_text, $nodes, $i);
+                } else {
+                    $in_pretext = false;
+                    $text .= Self::convert_node($node);
+                }
+            } else {
+                $text .= Self::convert_node($node);
+            }
+        }
+
+        return $text;
     }
 
     public function compile($id, $document) {
