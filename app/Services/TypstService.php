@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -21,13 +22,27 @@ class TypstService
             right: 2cm,
             bottom: 2cm,
         ))
+
         #set par(
           justify: true,
           first-line-indent: 1.25cm,
           leading: 0.7811699164em,
         )
 
-        {{ $content }}
+        #set text(top-edge: 0.7em, bottom-edge: -0.3em)
+
+        #let pretextual = (nome, texto) => {
+          align(center,
+            heading(outlined: false,
+              upper(text(weight: "bold", nome)),
+            ),
+          )
+          linebreak()
+          par(texto)
+          pagebreak()
+        }
+
+        {!! $content !!}
     EOT;
 
     private static function textify_node($node) {
@@ -129,7 +144,11 @@ class TypstService
 
     public function compile($id, $document) {
         $typ_file = $id . ".typ";
-        Storage::put($typ_file, $document);
+        $rendered = Blade::render(
+            self::$TYPST_TEMPLATE,
+            ['content' => $document]
+        );
+        Storage::put($typ_file, $rendered);
         $path = Storage::path($typ_file);
 
         $command = sprintf("typst compile --format pdf %s -", $path, $id);
