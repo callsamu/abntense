@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Document;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
@@ -15,7 +16,7 @@ class TypstService
     ];
 
     private static $TYPST_TEMPLATE = <<<'EOT'
-        #set text(font: "Liberation Sans", size: 12pt)
+        #set text(font: "Liberation Serif", size: 12pt)
         #set page(margin: (
             top: 3cm,
             left: 3cm,
@@ -27,6 +28,29 @@ class TypstService
           justify: true,
           first-line-indent: 1.25cm,
           leading: 0.7811699164em,
+        )
+
+
+        #let space = (n) => {
+            for i in range(n) { linebreak() }
+        }
+
+        #page(
+          align(
+            center,
+            text[
+              #upper[*{{ $institution }}*] \
+              #upper[*Bacharelado em Engenharia da Computação*]
+              #space(3)
+              #upper[{{ $author }}] \
+              #space(16)
+              #upper[*{{ $title }}*] \
+              Subtitulo do Trabalho \
+              #space(16)
+              #upper[{{ $location }}] \
+              {{ $year }}
+            ],
+          )
         )
 
         #set text(top-edge: 0.7em, bottom-edge: -0.3em)
@@ -142,12 +166,27 @@ class TypstService
         return $text;
     }
 
-    public function compile($id, $document) {
-        $typ_file = $id . ".typ";
+    public function compile(Document $document, $content) {
+        $id = $document->id;
+        $title = $document->title;
+        $author = $document->users()->first()->name;
+        $metadata = $document->metadata;
+
         $rendered = Blade::render(
             self::$TYPST_TEMPLATE,
-            ['content' => $document]
+            [
+                'title' => $title,
+                'author' => $author,
+                'local' => $metadata['local'] ?? "",
+                'institution' => $metadata['institution'] ?? "",
+                'description' => $metadata['description'] ?? "",
+                'year' => $metadata['year'] ?? "",
+                'location' => $metadata['location'] ?? "",
+                'content' => $content,
+            ]
         );
+
+        $typ_file = $id . ".typ";
         Storage::put($typ_file, $rendered);
         $path = Storage::path($typ_file);
 

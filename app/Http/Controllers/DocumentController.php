@@ -51,11 +51,10 @@ class DocumentController extends Controller
         return "ok";
     }
 
-    public function compile(string $id, TypstService $typst)
-    {
+    public function compile(string $id, TypstService $typst) {
         $document = Document::findOrFail($id);
-        $input = $typst->fromTiptap($document->content);
-        $pdf = $typst->compile($id, $input);
+        $typst_content = $typst->fromTiptap($document->content);
+        $pdf = $typst->compile($document, $typst_content);
         return response()->file($pdf);
     }
 }

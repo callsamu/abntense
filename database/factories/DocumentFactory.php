@@ -19,8 +19,10 @@ class DocumentFactory extends Factory
         return [
             'title' => $this->faker->sentence(),
             'metadata' => [
-                'local' => $this->faker->word(),
+                'location' => $this->faker->word(),
                 'description' => $this->faker->text(64),
+                'institution' => $this->faker->company(),
+                'year' => $this->faker->year(),
             ],
             'content' => [
                 "type" => "doc",
