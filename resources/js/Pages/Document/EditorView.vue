@@ -2,14 +2,12 @@
 import { defineProps, ref, useTemplateRef, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { DocumentData } from '@/types';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import * as pdfJs from 'pdfjs-dist';
 import axios from 'axios';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import NavLink from '@/Components/NavLink.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 pdfJs.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.min.mjs';
 
@@ -31,13 +29,12 @@ const pdf = ref<string | null>(null);
 watch(pdf, async (newPdf) => {
     if (!container.value) return;
 
-
     const containerRef = container.value;
     containerRef.innerHTML = '';
     const pdfDoc = await pdfJs.getDocument(newPdf).promise;
 
     const page = await pdfDoc.getPage(1);
-    const viewport = page.getViewport({ scale: 0.75 });
+    const viewport = page.getViewport({ scale: 1 });
 
     const pageNumber = pdfDoc.numPages;
 
@@ -84,12 +81,18 @@ async function compile() {
 <template>
     <Head :title=props.document.title />
     <div class="h-screen bg-neutral-100 dark:bg-neutral-900 flex">
-        <div class="h-full w-fit bg-neutral-800 px-2 py-1">
-            <NavLink class="border-none" :href="route('dashboard')">
+        <div class="h-full w-32 flex flex-col gap-4 bg-neutral-800 px-2 py-1">
+            <NavLink class="border-none w-full text-sm" :href="route('dashboard')">
                 <SecondaryButton class="border-none">
                     Voltar
                 </SecondaryButton>
             </NavLink>
+            <SecondaryButton class="border-none w-full" @click="save()">
+               Save
+            </SecondaryButton>
+            <SecondaryButton class="border-none w-full" @click="save().then(compile)">
+                Preview
+            </SecondaryButton>
         </div>
         <div class="flex flex-grow justify-center items-stretch h-full text-white">
             <div className="w-2/5 p-5 h-full flex items-stretch flex-col overflow-y-scroll">
@@ -98,12 +101,6 @@ async function compile() {
                         {{ props.document.title }}
                     </h2>
                     <div class="flex gap-3">
-                        <PrimaryButton @click="save()">
-                           Save
-                        </PrimaryButton>
-                        <PrimaryButton @click="save().then(compile)">
-                            Preview
-                        </PrimaryButton>
                     </div>
                 </div>
                 <editor-content
@@ -117,10 +114,13 @@ async function compile() {
                 border rounded-xl border-neutral-800 my-5
                 flex flex-col
             " :class="{ 'hidden': pdf === null }">
-                <div class="bg-neutral-900 border-b border-neutral-800 rounded-t-xl p-4 flex justify-end">
+                <div class="w-full bg-neutral-900 border-b border-neutral-800 rounded-t-xl p-4 flex justify-end">
                     <SecondaryButton @click="pdf = null">Close</SecondaryButton>
                 </div>
-                <div ref="pdf-viewer" class="overflow-y-scroll p-10 flex-grow"></div>
+                <div
+                    ref="pdf-viewer"
+                    class="w-full my-2 overflow-y-scroll p-10 flex-grow flex items-center flex-col gap-4">
+                </div>
             </div>
         </div>
     </div>
