@@ -3,6 +3,7 @@ import { defineProps, ref, useTemplateRef, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { DocumentData } from '@/types';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
+import { Icon } from '@iconify/vue';
 import StarterKit from '@tiptap/starter-kit';
 import * as pdfJs from 'pdfjs-dist';
 import axios from 'axios';
@@ -81,17 +82,27 @@ async function compile() {
 <template>
     <Head :title=props.document.title />
     <div class="h-screen bg-neutral-100 dark:bg-neutral-900 flex">
-        <div class="h-full w-32 flex flex-col gap-4 bg-neutral-800 px-2 py-1">
-            <NavLink class="border-none w-full text-sm" :href="route('dashboard')">
-                <SecondaryButton class="border-none">
-                    Voltar
-                </SecondaryButton>
-            </NavLink>
-            <SecondaryButton class="border-none w-full" @click="save()">
-               Save
+        <div class="h-full w-fit flex flex-col gap-4 bg-neutral-800 px-2 py-4">
+            <SecondaryButton
+                class="flex-col border-none"
+                title="Voltar para a Dashboard"
+                @click="router.visit(route('dashboard'))"
+            >
+                <Icon icon="material-symbols:home" class="w-6 h-6" />
             </SecondaryButton>
-            <SecondaryButton class="border-none w-full" @click="save().then(compile)">
-                Preview
+            <SecondaryButton
+                @click="save()"
+                title="Salvar"
+                class="border-none w-full"
+            >
+                <Icon icon="material-symbols:save" class="w-6 h-6" />
+            </SecondaryButton>
+            <SecondaryButton
+                title="Preview"
+                class="border-none w-full"
+                @click="save().then(compile)"
+            >
+                <Icon icon="mdi:eye" class="w-6 h-6" />
             </SecondaryButton>
         </div>
         <div class="flex flex-grow justify-center items-stretch h-full text-white">
