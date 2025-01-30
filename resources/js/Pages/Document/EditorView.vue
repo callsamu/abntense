@@ -10,6 +10,7 @@ import axios from 'axios';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import MenuButton from '@/Components/MenuButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 
 pdfJs.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.min.mjs';
 
@@ -24,8 +25,21 @@ const editor = useEditor({
     extensions: [StarterKit],
 })
 
+enum Tabs {
+    Editor = 0,
+    Preview = 1,
+    Settings = 2
+}
+
 const container = useTemplateRef<HTMLDivElement>('pdf-viewer');
+const tab = ref(Tabs.Editor);
 const pdf = ref<string | null>(null);
+
+watch(tab, async (newTab) => {
+    if (newTab === Tabs.Preview) {
+        save().then(compile);
+    }
+});
 
 
 watch(pdf, async (newPdf) => {
@@ -98,16 +112,22 @@ async function compile() {
                 <MenuButton
                     icon="mdi:eye"
                     title="Preview"
-                    :active="pdf !== null"
-                    @click="save().then(compile)"
+                    :active="tab === Tabs.Preview"
+                    @click="tab = (tab === Tabs.Preview) ? Tabs.Editor : Tabs.Preview"
                 />
                 <MenuButton
                     icon="solar:document-add-linear"
                     title="Editar Informações"
+                    :active="tab === Tabs.Settings"
+                    @click="tab = tab === Tabs.Settings ? Tabs.Editor : Tabs.Settings"
                 />
             </div>
-            <div class="w-96 bg-neutral-900 p-10 text-neutral-900 dark:text-neutral-100 border-2 border-neutral-800">
+            <div
+                v-if="tab === Tabs.Settings"
+                class="w-96 bg-neutral-900 p-10 text-neutral-900 dark:text-neutral-100 border-2 border-neutral-800"
+            >
                 <h2 class="text-3xl mb-6 font-bold">Editar Informações</h2>
+                <InputLabel for="title" value="Título" />
                 <TextInput v-model="props.document.title" label="Título" />
             </div>
         </div>
@@ -129,10 +149,11 @@ async function compile() {
             <div class="
                 bg-neutral-950 overflow-y-scroll
                 border rounded-xl border-neutral-800 my-5
-                flex flex-col
-            " :class="{ 'hidden': pdf === null }">
+                flex flex-col w-2/5
+            " :class="{ 'hidden': tab !== Tabs.Preview }">
                 <div class="w-full bg-neutral-900 border-b border-neutral-800 rounded-t-xl p-4 flex justify-end">
-                    <SecondaryButton @click="pdf = null">Close</SecondaryButton>
+                    <SecondaryButton @click="save().then(compile)">Reload</SecondaryButton>
+                    <SecondaryButton @click="tab = Tabs.Editor">Close</SecondaryButton>
                 </div>
                 <div
                     ref="pdf-viewer"
