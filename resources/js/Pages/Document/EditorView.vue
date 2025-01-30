@@ -7,8 +7,9 @@ import { Icon } from '@iconify/vue';
 import StarterKit from '@tiptap/starter-kit';
 import * as pdfJs from 'pdfjs-dist';
 import axios from 'axios';
-import NavLink from '@/Components/NavLink.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import MenuButton from '@/Components/MenuButton.vue';
+import TextInput from '@/Components/TextInput.vue';
 
 pdfJs.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.min.mjs';
 
@@ -82,28 +83,33 @@ async function compile() {
 <template>
     <Head :title=props.document.title />
     <div class="h-screen bg-neutral-100 dark:bg-neutral-900 flex">
-        <div class="h-full w-fit flex flex-col gap-4 bg-neutral-800 px-2 py-4">
-            <SecondaryButton
-                class="flex-col border-none"
-                title="Voltar para a Dashboard"
-                @click="router.visit(route('dashboard'))"
-            >
-                <Icon icon="material-symbols:home" class="w-6 h-6" />
-            </SecondaryButton>
-            <SecondaryButton
-                @click="save()"
-                title="Salvar"
-                class="border-none w-full"
-            >
-                <Icon icon="material-symbols:save" class="w-6 h-6" />
-            </SecondaryButton>
-            <SecondaryButton
-                title="Preview"
-                class="border-none w-full"
-                @click="save().then(compile)"
-            >
-                <Icon icon="mdi:eye" class="w-6 h-6" />
-            </SecondaryButton>
+        <div class="flex flex-row">
+            <div class="h-full w-fit flex flex-col bg-neutral-800">
+                <MenuButton
+                    icon="material-symbols:home"
+                    title="Home"
+                    @click="router.visit(route('dashboard'))"
+                />
+                <MenuButton
+                    icon="material-symbols:save"
+                    title="Salvar"
+                    @click="save()"
+                />
+                <MenuButton
+                    icon="mdi:eye"
+                    title="Preview"
+                    :active="pdf !== null"
+                    @click="save().then(compile)"
+                />
+                <MenuButton
+                    icon="solar:document-add-linear"
+                    title="Editar Informações"
+                />
+            </div>
+            <div class="w-96 bg-neutral-900 p-10 text-neutral-900 dark:text-neutral-100 border-2 border-neutral-800">
+                <h2 class="text-3xl mb-6 font-bold">Editar Informações</h2>
+                <TextInput v-model="props.document.title" label="Título" />
+            </div>
         </div>
         <div class="flex flex-grow justify-center items-stretch h-full text-white">
             <div className="w-2/5 p-5 h-full flex items-stretch flex-col overflow-y-scroll">
