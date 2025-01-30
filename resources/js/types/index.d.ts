@@ -10,6 +10,10 @@ export interface User {
 }
 
 export interface AbntMetadata {
+    location: string;
+    description: string;
+    institution: string;
+    year: number;
 }
 
 export interface DocumentData {
