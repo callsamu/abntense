@@ -37,6 +37,7 @@ class DocumentController extends Controller
                 'id' => $document->id,
                 'title' => $document->title,
                 'content' => $document->content,
+                    'metadata' => $document->metadata
             ],
         ]);
     }
@@ -44,17 +45,35 @@ class DocumentController extends Controller
     public function update(string $id, Request $request)
     {
         $document = Document::findOrFail($id);
-        $input = $request->input('document');
-        $document->content = $input;
+        $content = $request->input('document');
+
+        if ($title = $request->input('title')) {
+            $document->title = $title;
+        }
+
+        if ($content = $request->input('content')) {
+            $document->content = $content;
+        }
+
+        if ($metadata = $request->input('metadata')) {
+            $document->metadata = $metadata;
+        }
+
         $document->save();
 
-        return "ok";
+        return $document;
     }
 
     public function compile(string $id, TypstService $typst) {
         $document = Document::findOrFail($id);
         $typst_content = $typst->fromTiptap($document->content);
-        $pdf = $typst->compile($document, $typst_content);
+
+        try {
+            $pdf = $typst->compile($document, $typst_content);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+
         return response()->file($pdf);
     }
 }
