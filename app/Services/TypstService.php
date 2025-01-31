@@ -140,7 +140,7 @@ class TypstService
         $text = "";
         $in_pretext = true;
 
-        if (!$document['content']) {
+        if (!isset( $document['content'])) {
             return $text;
         }
 
