@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps, ref, useTemplateRef, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
-import { DocumentData } from '@/types';
+import { AbntMetadata, DocumentData } from '@/types';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import { Icon } from '@iconify/vue';
 import StarterKit from '@tiptap/starter-kit';
@@ -11,6 +11,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import MenuButton from '@/Components/MenuButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import EditMetadataForm from './Partials/EditMetadataForm.vue';
 
 pdfJs.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.min.mjs';
 
@@ -69,8 +70,6 @@ watch(pdf, async (newPdf) => {
 });
 
 async function save() {
-    console.info(props.document);
-    console.log(editor.value?.getJSON());
     return axios.patch(route('document.update', props.document.id), {
         document: editor.value?.getJSON(),
     });
@@ -91,6 +90,13 @@ async function compile() {
     reader.onload = () => {
         pdf.value = reader.result as string;
     }
+}
+
+async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
+    props.document.title = title;
+    props.document.metadata = metadata;
+    tab.value = Tabs.Editor;
+    save().then(compile);
 }
 
 </script>
@@ -126,9 +132,12 @@ async function compile() {
                 v-if="tab === Tabs.Settings"
                 class="w-96 bg-neutral-900 p-10 text-neutral-900 dark:text-neutral-100 border-2 border-neutral-800"
             >
-                <h2 class="text-3xl mb-6 font-bold">Editar Informações</h2>
-                <InputLabel for="title" value="Título" />
-                <TextInput v-model="props.document.title" label="Título" />
+                <EditMetadataForm
+                    :id="props.document.id"
+                    :title="props.document.title"
+                    :metadata="props.document.metadata"
+                    @update="onMetadataUpdate"
+                />
             </div>
         </div>
         <div class="flex flex-grow justify-center items-stretch h-full text-white">
