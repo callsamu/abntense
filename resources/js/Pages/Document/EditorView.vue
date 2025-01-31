@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import { defineProps, ref, useTemplateRef, watch } from 'vue'
+import { defineProps, ref, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { AbntMetadata, DocumentData } from '@/types';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
-import { Icon } from '@iconify/vue';
 import StarterKit from '@tiptap/starter-kit';
-import * as pdfJs from 'pdfjs-dist';
 import axios from 'axios';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import MenuButton from '@/Components/MenuButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue';
+import PDFViewer from './Partials/PDFViewer.vue';
 import EditMetadataForm from './Partials/EditMetadataForm.vue';
 
-pdfJs.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.min.mjs';
 
 interface Props {
     document: DocumentData;
@@ -32,40 +27,12 @@ enum Tabs {
     Settings = 2
 }
 
-const container = useTemplateRef<HTMLDivElement>('pdf-viewer');
 const tab = ref(Tabs.Editor);
 const pdf = ref<string | null>(null);
 
 watch(tab, async (newTab) => {
     if (newTab === Tabs.Preview) {
         save().then(compile);
-    }
-});
-
-
-watch(pdf, async (newPdf) => {
-    if (!container.value) return;
-
-    const containerRef = container.value;
-    containerRef.innerHTML = '';
-    const pdfDoc = await pdfJs.getDocument(newPdf).promise;
-
-    const page = await pdfDoc.getPage(1);
-    const viewport = page.getViewport({ scale: 1 });
-
-    const pageNumber = pdfDoc.numPages;
-
-    for (let i = 0; i < pageNumber; i++) {
-        const newCanvas = document.createElement('canvas');
-        newCanvas.width = viewport.width;
-        newCanvas.height = viewport.height;
-
-        const context = newCanvas.getContext('2d');
-        if (!context) continue;
-        const visiblePage = await pdfDoc.getPage(i + 1);
-        visiblePage.render({ canvasContext: context, viewport });
-
-        containerRef.appendChild(newCanvas);
     }
 });
 
@@ -95,7 +62,7 @@ async function compile() {
 async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
     props.document.title = title;
     props.document.metadata = metadata;
-    tab.value = Tabs.Editor;
+    tab.value = Tabs.Preview;
     save().then(compile);
 }
 
@@ -160,14 +127,11 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
                 border rounded-xl border-neutral-800 my-5
                 flex flex-col w-2/5
             " :class="{ 'hidden': tab !== Tabs.Preview }">
-                <div class="w-full bg-neutral-900 border-b border-neutral-800 rounded-t-xl p-4 flex justify-end">
-                    <SecondaryButton @click="save().then(compile)">Reload</SecondaryButton>
-                    <SecondaryButton @click="tab = Tabs.Editor">Close</SecondaryButton>
-                </div>
-                <div
-                    ref="pdf-viewer"
-                    class="w-full my-2 overflow-y-scroll p-10 flex-grow flex items-center flex-col gap-4">
-                </div>
+                <PDFViewer
+                    :pdf="pdf"
+                    @reload="save().then(compile)"
+                    @close="tab = Tabs.Editor"
+                />
             </div>
         </div>
     </div>
