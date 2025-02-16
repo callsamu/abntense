@@ -23,15 +23,15 @@ const editor = useEditor({
 
 enum Tabs {
     Editor = 0,
-    Preview = 1,
-    Settings = 2
+    Settings = 1
 }
 
+const previewOpen = ref(false);
 const tab = ref(Tabs.Editor);
 const pdf = ref<string | null>(null);
 
-watch(tab, async (newTab) => {
-    if (newTab === Tabs.Preview) {
+watch(previewOpen, async (newPreviewOpen) => {
+    if (newPreviewOpen) {
         save().then(compile);
     }
 });
@@ -62,7 +62,8 @@ async function compile() {
 async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
     props.document.title = title;
     props.document.metadata = metadata;
-    tab.value = Tabs.Preview;
+    previewOpen.value = true;
+    tab.value = Tabs.Editor;
     save().then(compile);
 }
 
@@ -85,8 +86,8 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
                 <MenuButton
                     icon="mdi:eye"
                     title="Preview"
-                    :active="tab === Tabs.Preview"
-                    @click="tab = (tab === Tabs.Preview) ? Tabs.Editor : Tabs.Preview"
+                    :active="previewOpen"
+                    @click="previewOpen = true; tab = Tabs.Editor"
                 />
                 <MenuButton
                     icon="solar:document-add-linear"
@@ -126,11 +127,11 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
                 bg-neutral-950 overflow-y-scroll
                 border rounded-xl border-neutral-800 my-5
                 flex flex-col w-2/5
-            " :class="{ 'hidden': tab !== Tabs.Preview }">
+            " :class="{ 'hidden': !previewOpen || tab !== Tabs.Editor }">
                 <PDFViewer
                     :pdf="pdf"
                     @reload="save().then(compile)"
-                    @close="tab = Tabs.Editor"
+                    @close="previewOpen = false"
                 />
             </div>
         </div>
