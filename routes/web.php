@@ -19,19 +19,15 @@ Route::get('/', function () {
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/dashboard', function () {
        $id = Auth::id();
-       $documents = Document::with('users')
-           ->find($id)
-           ->orderBy('updated_at', 'desc')
-           ->get();
+       $documents = Document::find($id)
+         ->orderBy('updated_at', 'desc')
+         ->get();
 
        $docs = $documents
            ->map(fn ($document) => [
                'id' => $document->id,
                'title' => $document->title,
-               'users' => $document
-                   ->users
-                   ->pluck('name')
-                   ->map(fn ($name) => ['name' => $name]),
+               'users' => $document->users,
                'updated_at' => $document->updated_at->diffForHumans(),
            ]);
 

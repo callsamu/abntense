@@ -39,6 +39,8 @@ class Document extends Model
     const ROLE_EDITOR = 'editor';
     const ROLE_VIEWER = 'viewer';
 
+    protected $with = ['users'];
+
     protected function casts(): array
     {
         return [
