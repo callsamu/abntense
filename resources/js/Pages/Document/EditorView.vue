@@ -108,7 +108,7 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
             </div>
         </div>
         <div class="flex flex-grow justify-center items-stretch h-full text-white">
-            <div className="w-2/5 p-5 h-full flex items-stretch flex-col overflow-y-scroll">
+            <div className="w-2/5 p-5 h-full flex items-stretch flex-col">
                 <div class="flex flex-col border-b border-neutral-700 py-3">
                     <h2 class="text-4xl mb-6 font-bold">
                         {{ props.document.title }}
@@ -139,7 +139,7 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
 
 <style>
     .tiptap {
-        height: fit;
+        height: 100%;
         color: white;
         overflow-y: scroll;
         outline: none;
