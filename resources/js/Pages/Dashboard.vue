@@ -30,19 +30,19 @@ const props = defineProps<Props>();
                 <div
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-neutral-800"
                 >
-                    <div class="p-6 text-neutral-900 dark:text-neutral-100 w-full flex justify-between flex-wrap gap-10">
+                    <div class="p-6 text-neutral-900 dark:text-neutral-100 w-full grid grid-cols-3 gap-8">
                         <Link
                             :href="route('document.create')"
                         >
                             <button
-                                class="bg-neutral-900 w-80 h-60 flex justify-center items-center rounded-xl cursor-pointer"
+                                class="bg-neutral-900 w-full h-full p-6 flex justify-center items-center rounded-xl cursor-pointer"
                             >
                                 <h2 class="text-3xl font-bold">+ Novo</h2>
                             </button>
                         </Link>
                         <div
                             class="
-                                bg-neutral-900 w-80 p-6 rounded-xl
+                                bg-neutral-900 w-full p-6 rounded-xl
                                 flex flex-col justify-center
                             "
                             v-for="doc in props.documents"
