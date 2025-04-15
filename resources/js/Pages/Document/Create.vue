@@ -4,10 +4,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextArea from '@/Components/TextArea.vue';
 
 const form = useForm({
     title: '',
+    metadata: {
+        description: '',
+        location: '',
+        institution: '',
+    },
 });
+
 </script>
 <template>
     <Head title="Novo Documento" />
@@ -34,7 +41,7 @@ const form = useForm({
                             <h2 class="text-lg font-medium"> Título do Documento </h2>
                             <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">Será usado para se referir ao documento por você e os colaboradores.</p>
                             <div class="my-4 flex flex-col gap-4">
-                                <div>
+                                <div class="mx-2">
                                     <InputLabel for="title" value="Título" />
                                     <TextInput
                                         v-model="form.title"
@@ -49,8 +56,38 @@ const form = useForm({
                             </div>
                         </div>
                         <div>
-                            <h2 class="text-lg font-medium"> Colaboradores </h2>
-                            <span class="font-mono my-4 opacity-60"> não-implementado </span>
+                            <h2 class="text-lg font-medium m-0"> Metadados </h2>
+                            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                                Informações utilizadas na capa e na folha de rosto do documento
+                            </p>
+                            <div class="my-6 mx-2 grid grid-cols-2 gap-8">
+                                <div class="row-span-2">
+                                    <InputLabel for="location" value="Descrição" />
+                                    <TextArea
+                                        id="description"
+                                        v-model="form.metadata.description"
+                                        spellcheck="false"
+                                        rows="5"
+                                        class="mt-1 block w-full bg resize-none"
+                                    />
+                                </div>
+                                <div>
+                                    <InputLabel for="location" value="Local" />
+                                    <TextInput
+                                        id="location"
+                                        v-model="form.metadata.location"
+                                        class="mt-1 block w-full"
+                                    />
+                                </div>
+                                <div>
+                                    <InputLabel for="institution" value="Instituição" />
+                                    <TextInput
+                                        id="Institution"
+                                        v-model="form.metadata.institution"
+                                        class="mt-1 block w-full"
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <PrimaryButton class="w-fit mt-7 px-2"> Criar </PrimaryButton>
                     </form>
