@@ -39,7 +39,6 @@ watch(() => pdf, async (newPdf) => {
 <template>
     <div class="w-full bg-neutral-900 border-b border-neutral-800 rounded-t-xl p-4 flex justify-end">
         <SecondaryButton @click="$emit('reload')">Reload</SecondaryButton>
-        <SecondaryButton @click="$emit('close')">Close</SecondaryButton>
     </div>
     <div
         ref="pdf-viewer"
