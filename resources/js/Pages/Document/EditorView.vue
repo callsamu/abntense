@@ -15,9 +15,13 @@ interface Props {
 };
 
 const props = defineProps<Props>();
+let changed = true;
 
 const editor = useEditor({
     content: props.document.content,
+    onUpdate: () => {
+        changed = true;
+    },
     extensions: [StarterKit],
 })
 
@@ -31,8 +35,9 @@ const tab = ref(Tabs.Editor);
 const pdf = ref<string | null>(null);
 
 watch(previewOpen, async (newPreviewOpen) => {
-    if (newPreviewOpen) {
+    if (newPreviewOpen && changed) {
         save().then(compile);
+        changed = false;
     }
 });
 
@@ -64,7 +69,7 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
     props.document.metadata = metadata;
     previewOpen.value = true;
     tab.value = Tabs.Editor;
-    save().then(compile);
+    changed = true;
 }
 
 </script>
@@ -87,7 +92,7 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
                     icon="mdi:eye"
                     title="Preview"
                     :active="previewOpen"
-                    @click="previewOpen = true; tab = Tabs.Editor"
+                    @click="previewOpen = !previewOpen; tab = Tabs.Editor"
                 />
                 <MenuButton
                     icon="solar:document-add-linear"
