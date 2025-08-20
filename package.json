@@ -1,32 +1,11 @@
 {
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "dev": "vite",
-        "build": "vue-tsc && vite build && vite build --ssr",
-        "test": "vitest"
-    },
-    "devDependencies": {
-        "@iconify/vue": "^4.3.0",
-        "@inertiajs/vue3": "^1.0.0",
-        "@tailwindcss/forms": "^0.5.3",
-        "@vitejs/plugin-vue": "^5.0.0",
-        "@vue/server-renderer": "^3.4.0",
-        "autoprefixer": "^10.4.12",
-        "axios": "^1.7.4",
-        "laravel-vite-plugin": "^1.0",
-        "postcss": "^8.4.31",
-        "tailwindcss": "^3.2.1",
-        "typescript": "^5.5.3",
-        "vite": "^5.0",
-        "vitest": "^2.1.8",
-        "vue": "^3.4.0",
-        "vue-tsc": "^2.0.24"
-    },
-    "dependencies": {
-        "@tiptap/core": "^2.8.0",
-        "@tiptap/starter-kit": "^2.8.0",
-        "@tiptap/vue-3": "^2.8.0",
-        "pdfjs-dist": "^4.10.38"
-    }
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "application"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "lerna": "^8.2.2"
+  }
 }
