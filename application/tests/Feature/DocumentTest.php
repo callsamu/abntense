@@ -4,7 +4,6 @@ use App\Models\Document;
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
-use function Pest\Laravel\post;
 
 test('example', function () {
     $response = $this->get('/');
@@ -17,3 +16,4 @@ test('example', function () {
     $response->assertStatus(200);
     $response->assertHeader('Content-Type', 'application/pdf');
 });
+

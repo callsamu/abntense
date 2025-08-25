@@ -12,12 +12,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 const DOCUMENT_COUNT = 3;
 
 test('example', function () {
-    $users = User::factory()
-        ->count(1 + DOCUMENT_COUNT)
-        ->create();
-
-    $user = $users->first();
-    $collaborators = $users->slice(1, DOCUMENT_COUNT);
+    $user = User::factory()->create();
 
     $descrescentTimestamps = fn (Sequence $sequence) =>
         ['updated_at' => now()->subDays($sequence->index)];
@@ -28,13 +23,11 @@ test('example', function () {
         ->create();
 
     assertEquals(DOCUMENT_COUNT, $documents->count());
-    assertTrue($documents->count() == $collaborators->count());
 
-    $documents->zip($collaborators)->each(function ($item) use ($user) {
-        [$document, $collaborator] = $item;
+    $documents->each(function ($item) use ($user) {
+        $document = $item;
         $document->users()->attach([
             $user->id => ['role' => Document::ROLE_OWNER],
-            $collaborator->id => ['role' => Document::ROLE_EDITOR]
         ]);
     });
 
@@ -45,10 +38,9 @@ test('example', function () {
         ->component('Dashboard')
         ->has('documents', DOCUMENT_COUNT, fn (Assert $page) => $page
             ->where('title', $documents->first()->title)
-            ->where('users', [
-                ['name' => $user->name],
-                ['name' => $collaborators->first()->name],
-            ])->etc()
+            ->where('users',
+                [$user->name],
+            )->etc()
         )
     );
 

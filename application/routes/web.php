@@ -27,7 +27,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
            ->map(fn ($document) => [
                'id' => $document->id,
                'title' => $document->title,
-               'users' => $document->users,
+               'users' => $document->users->map(fn ($user) => $user->name),
                'updated_at' => $document->updated_at->diffForHumans(),
            ]);
 
