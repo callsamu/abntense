@@ -1,1 +1,5 @@
 vendor/*
+public/hot
+public/build
+bootstrap/cache
+bootstrap/ssr

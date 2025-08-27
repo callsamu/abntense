@@ -24,6 +24,7 @@
         "vue-tsc": "^2.0.24"
     },
     "dependencies": {
+        "@monorepo/ui": "^0.0.0",
         "@tiptap/core": "^2.8.0",
         "@tiptap/starter-kit": "^2.8.0",
         "@tiptap/vue-3": "^2.8.0",
