@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es6",
     "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -9,15 +9,23 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "lib": ["esnext", "dom"],
+    "lib": ["es6", "dom"],
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationDir": "./dist/types",
     "isolatedModules": true,
     "skipLibCheck": true,
     "types": [
-      "vite/client"
+      "vite/client",
+      "mocha"
     ]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/index.js"]
+  "include": [
+      "src/**/*.ts",
+      "src/**/*.d.ts",
+      "src/**/*.tsx",
+      "src/**/*.vue",
+      "src/index.js",
+      "cypress"
+  ]
 }
