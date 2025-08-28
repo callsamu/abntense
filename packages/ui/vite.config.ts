@@ -5,7 +5,11 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 
 export default defineConfig({
-  plugins: [vue(), tailwindcss()], // to process SFC
+  plugins: [
+    vue(),
+    tailwindcss(),
+  ],
+
   build: {
     lib: {
       entry: {
@@ -18,7 +22,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // external modules won't be bundled into your library
-      external: ['vue', /primevue\/.+/], // not every external has a global
+      external: ['vue', /primevue\/.+/, '**/*.cy.tsx'], // not every external has a global
       output: {
         // disable warning on src/index.ts using both default and named export
         exports: 'named',
@@ -33,7 +37,7 @@ export default defineConfig({
   },
   resolve: {
     alias: [
-      { find: "@/", replacement: path.resolve(__dirname, "./src") }
+      { find: "@", replacement: path.resolve(__dirname, "./src") },
     ],
   }
 });
