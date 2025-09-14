@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "lib": ["es6", "dom"],
     "sourceMap": true,
     "types": ["node", "cypress"],
-    "lib": ["es6", "dom", "cypress"]
+    "lib": ["es6", "dom"],
+    "paths": {
+        "@/*": ["./src/*"]
+    }
   },
   "include": ["**/*.ts"]
 }

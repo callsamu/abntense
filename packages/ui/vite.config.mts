@@ -1,15 +1,9 @@
-import { defineConfig } from 'vite';
+import { defineConfig, mergeConfig } from 'vite';
 import { resolve } from 'path';
-import vue from '@vitejs/plugin-vue';
-import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 
-export default defineConfig({
-  plugins: [
-    vue(),
-    tailwindcss(),
-  ],
 
+const config = defineConfig({
   build: {
     lib: {
       entry: {
@@ -41,3 +35,12 @@ export default defineConfig({
     ],
   }
 });
+
+export default async () => {
+    const { default: tailwind } = await import('@tailwindcss/vite');
+    const { default: vue} = await import('@vitejs/plugin-vue');
+
+    return mergeConfig(config, {
+        plugins: [tailwind(), vue()],
+    });
+}

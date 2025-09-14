@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -18,7 +18,10 @@
     "types": [
       "vite/client",
       "mocha"
-    ]
+    ],
+    "paths": {
+        "@/*": ["./src/*"]
+    }
   },
   "include": [
       "src/**/*.ts",
@@ -26,6 +29,8 @@
       "src/**/*.tsx",
       "src/**/*.vue",
       "src/index.js",
-      "cypress"
+      "cypress",
+      "cypress.config.ts",
+      "vite.config.mts"
   ]
 }
