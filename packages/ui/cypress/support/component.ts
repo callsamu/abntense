@@ -23,3 +23,7 @@ Cypress.Commands.add('mount', (component, ...args) => {
     // @ts-ignore
     return mount(component, args);
 });
+
+Cypress.Commands.add('getByData', (name) => {
+    return cy.get(`[data-test="${name}"]`);
+});
