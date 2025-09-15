@@ -5,13 +5,14 @@ import { mount } from 'cypress/vue'
 import PrimeVue from 'primevue/config'
 
 
-Cypress.Commands.add('mount', (component, ...args) => {
+Cypress.Commands.add('mount', (component, options = {}) => {
     // @ts-ignore
-    args.global = args.global || {}
+    options.global = options.global || {}
     // @ts-ignore
-    args.global.plugins = args.global.plugins || []
+    options.global.plugins = options.global.plugins || []
+
     // @ts-ignore
-    args.global.plugins.push({
+    options.global.plugins.push({
         // @ts-ignore
         install(app) {
             app.use(PrimeVue, {
@@ -20,8 +21,10 @@ Cypress.Commands.add('mount', (component, ...args) => {
         }
     })
 
+    console.log(options);
+
     // @ts-ignore
-    return mount(component, args);
+    return mount(component, options);
 });
 
 Cypress.Commands.add('getByData', (name) => {
