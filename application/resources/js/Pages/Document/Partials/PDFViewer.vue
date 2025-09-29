@@ -2,12 +2,13 @@
 import { watch, useTemplateRef, defineProps } from 'vue';
 import * as pdfJs from 'pdfjs-dist';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import pdfjsWorker from '/public/pdf.worker.min.js?url';
 
 const { pdf } = defineProps<{ pdf: string | null }>();
 const emit = defineEmits(['close', 'reload']);
 
 const container = useTemplateRef<HTMLDivElement>('pdf-viewer');
-pdfJs.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.min.mjs';
+pdfJs.GlobalWorkerOptions.workerSrc =  pdfjsWorker;
 
 watch(() => pdf, async (newPdf) => {
     if (!container.value || !newPdf) return;
