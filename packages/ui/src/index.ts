@@ -2,7 +2,7 @@ import { App } from 'vue'
 import * as components from './components'
 import PrimeVue from 'primevue/config';
 
-function install (app: App) {
+function install (app: App): App {
   for (const key in components) {
     // @ts-expect-error
     app.component(key, components[key])
@@ -11,6 +11,8 @@ function install (app: App) {
   app.use(PrimeVue, {
     unstyled: true
   });
+
+  return app;
 }
 
 export default { install }
