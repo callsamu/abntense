@@ -43,7 +43,7 @@ watch(() => pdf, async (newPdf) => {
     </div>
     <div
         ref="pdf-viewer"
-        class="w-full my-2 overflow-y-scroll p-10 flex-grow flex items-center flex-col gap-4">
+        class="w-full my-2 overflow-y-scroll p-10 grow flex items-center flex-col gap-4">
     </div>
 </template>
 

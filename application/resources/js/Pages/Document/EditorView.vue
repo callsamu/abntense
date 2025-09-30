@@ -113,7 +113,7 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
                 />
             </div>
         </div>
-        <div class="flex flex-grow justify-center items-stretch h-full text-white">
+        <div class="flex grow justify-center items-stretch h-full text-white">
             <div className="w-2/5 p-5 h-full flex items-stretch flex-col">
                 <div class="flex flex-col border-b border-neutral-700 py-3">
                     <h2 class="text-4xl mb-6 font-bold">
@@ -123,7 +123,7 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
                     </div>
                 </div>
                 <editor-content
-                    class="overflow-y-scroll flex-grow py-4 pr-4"
+                    class="overflow-y-scroll grow py-4 pr-4"
                     :editor="editor"
                     spellcheck="false"
                 />
