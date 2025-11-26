@@ -1,6 +1,5 @@
-@import 'tailwindcss';
+@import '@monorepo/ui/app.css';
 
-@config '../../tailwind.config.js';
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
