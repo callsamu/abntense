@@ -43,7 +43,7 @@ watch(previewOpen, async (newPreviewOpen) => {
 
 async function save() {
     return axios.patch(route('document.update', props.document.id), {
-        document: editor.value?.getJSON(),
+        content: editor.value?.getJSON(),
     });
 }
 
@@ -144,6 +144,8 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
 </template>
 
 <style>
+    @reference "@monorepo/ui/app.css";
+
     .tiptap {
         height: 100%;
         color: white;
@@ -155,11 +157,23 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
     }
 
     .tiptap h1 {
-        @apply text-3xl font-bold;
+        @apply font-bold text-3xl mt-5 mb-1;
     }
 
     .tiptap h2 {
-        @apply text-2xl font-bold;
+        @apply font-bold text-2xl mt-4 mb-1;
     }
-</style>
+
+    .tiptap h3 {
+        @apply font-bold text-xl mt-3 mb-1;
+    }
+
+    .tiptap ul {
+        @apply pl-6 my-1 list-disc;
+    }
+
+    .tiptap li {
+       @apply my-1 pl-1;
+    }
+    </style>
 
