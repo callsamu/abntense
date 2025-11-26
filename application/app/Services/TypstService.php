@@ -42,7 +42,7 @@ class TypstService
               #upper[*{{ $institution }}*] \
               #upper[*Bacharelado em Engenharia da Computação*]
               #space(3)
-              #upper[{{ $author }}] \
+              #upper[{{ $authors }}] \
               #space(16)
               #upper[*{{ $title }}*] \
               Subtitulo do Trabalho \
@@ -169,21 +169,27 @@ class TypstService
     public function compile(Document $document, $content) {
         $id = $document->id;
         $title = $document->title;
-        $author = $document->users()->first()->name;
         $metadata = $document->metadata;
+
+        $authors = $metadata['authors'] ?? [];
+        if ($authors) {
+            $authors = implode(", ", $authors);
+        } else {
+            $authors = $document->users->first()->name;
+        }
 
         $rendered = Blade::render(
             self::$TYPST_TEMPLATE,
             [
                 'title' => $title,
-                'author' => $author,
+                'authors' => $authors,
                 'local' => $metadata['local'] ?? "",
                 'institution' => $metadata['institution'] ?? "",
                 'description' => $metadata['description'] ?? "",
                 'year' => $metadata['year'] ?? "",
                 'location' => $metadata['location'] ?? "",
                 'content' => $content,
-            ]
+            ],
         );
 
         $typ_file = $id . ".typ";

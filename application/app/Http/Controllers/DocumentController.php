@@ -18,8 +18,8 @@ class DocumentController extends Controller
     {
         $data = $request->validate([
             'title' => 'required',
+            'metadata' => 'required|array',
         ]);
-
 
         $document = Document::factory()->createOne($data);
         $document->users()->attach(Auth::id(), ['role' => Document::ROLE_OWNER]);
@@ -45,7 +45,6 @@ class DocumentController extends Controller
     public function update(string $id, Request $request)
     {
         $document = Document::findOrFail($id);
-        $content = $request->input('document');
 
         if ($title = $request->input('title')) {
             $document->title = $title;

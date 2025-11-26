@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextArea from '@/Components/TextArea.vue';
+import { ChipInput } from '@monorepo/ui';
 
 const form = useForm({
     title: '',
@@ -12,6 +13,7 @@ const form = useForm({
         description: '',
         location: '',
         institution: '',
+        authors: [],
     },
 });
 
@@ -54,6 +56,11 @@ const form = useForm({
                                     />
                                 </div>
                             </div>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-medium"> Autores </h2>
+                            <ChipInput v-model="form.metadata.authors" />
+
                         </div>
                         <div>
                             <h2 class="text-lg font-medium m-0"> Metadados </h2>
