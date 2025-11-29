@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "packages": [
     "application",
-    "packages/ui"
+    "packages/ui",
+    "packages/editor"
   ]
 }

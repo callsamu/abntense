@@ -3,7 +3,7 @@ import { defineProps, ref, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { AbntMetadata, DocumentData } from '@/types';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
+import setupEditorExtensions from '@monorepo/editor';
 import axios from 'axios';
 import MenuButton from '@/Components/MenuButton.vue';
 import PDFViewer from './Partials/PDFViewer.vue';
@@ -22,7 +22,9 @@ const editor = useEditor({
     onUpdate: () => {
         changed = true;
     },
-    extensions: [StarterKit],
+    extensions: setupEditorExtensions({
+       placeholderClass: '.empty-node',
+    }),
 })
 
 enum Tabs {
@@ -168,6 +170,10 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
         @apply font-bold text-xl mt-3 mb-1;
     }
 
+    .tiptap p {
+        @apply my-1;
+    }
+
     .tiptap ul {
         @apply pl-6 my-1 list-disc;
     }
@@ -175,5 +181,17 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
     .tiptap li {
        @apply my-1 pl-1;
     }
-    </style>
+
+    .tiptap {
+        @apply text-sm;
+    }
+
+    .tiptap p.is-empty::before {
+        @apply opacity-70;
+        content: attr(data-placeholder);
+        float: left;
+        height: 0;
+        pointer-events: none;
+    }
+</style>
 

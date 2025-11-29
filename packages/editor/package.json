@@ -1,0 +1,32 @@
+{
+  "name": "@monorepo/editor",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "callsamu <samuelbree@gmail.com>",
+  "homepage": "https://github.com/callsamu/abntense#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/callsamu/abntense.git"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "bugs": {
+    "url": "https://github.com/callsamu/abntense/issues"
+  },
+  "dependencies": {
+    "@tiptap/extension-placeholder": "^3.11.1"
+  }
+}
