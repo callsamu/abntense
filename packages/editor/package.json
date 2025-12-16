@@ -1,34 +1,45 @@
 {
   "name": "@monorepo/editor",
+  "private": true,
   "version": "0.0.0",
-  "description": "> TODO: description",
-  "author": "callsamu <samuelbree@gmail.com>",
-  "homepage": "https://github.com/callsamu/abntense#readme",
-  "license": "ISC",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "directories": {
-    "lib": "lib"
-  },
-  "files": [
-    "lib"
-  ],
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/callsamu/abntense.git"
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/editor.umd.cjs",
+  "module": "./dist/editor.js",
+  "typings": "./dist/main.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/main.d.ts",
+        "default": "./dist/editor.js"
+      },
+      "require": {
+        "types": "./dist/main.d.ts",
+        "default": "./dist/editor.js"
+      }
+    },
+    "./editor.css": "./lib/editor.css"
   },
   "scripts": {
-    "build": "tsc"
-  },
-  "bugs": {
-    "url": "https://github.com/callsamu/abntense/issues"
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
     "@tiptap/extension-details": "^3.11.1",
     "@tiptap/extension-placeholder": "^3.11.1",
-    "@tiptap/starter-kit": "^3.11.1"
+    "@tiptap/starter-kit": "^3.11.1",
+    "tailwindcss": "^4.1.18",
+    "vue": "^3.5.24"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vue/tsconfig": "^0.8.1",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-dts": "^4.5.4",
+    "vue-tsc": "^3.1.4"
   }
 }

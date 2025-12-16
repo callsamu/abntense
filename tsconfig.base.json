@@ -5,13 +5,13 @@
         "moduleResolution": "bundler",
         "jsx": "preserve",
         "strict": true,
+        "sourceMap": true,
         "isolatedModules": true,
         "target": "ESNext",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
+        "noEmit": false,
         "skipLibCheck": true,
-        "paths": {
-        }
+        "paths": {}
     }
 }

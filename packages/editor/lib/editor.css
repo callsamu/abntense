@@ -1,0 +1,111 @@
+@reference "@monorepo/ui/app.css";
+
+.tiptap {
+    height: 100%;
+    color: white;
+    overflow-y: scroll;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tiptap h1 {
+    @apply font-bold text-3xl mt-5 mb-1;
+}
+
+.tiptap h2 {
+    @apply font-bold text-2xl mt-4 mb-1;
+}
+
+.tiptap h3 {
+    @apply font-bold text-xl mt-3 mb-1;
+}
+
+.tiptap p {
+    @apply my-1;
+}
+
+.tiptap ul {
+    @apply pl-6 my-1 list-disc;
+}
+
+.tiptap li {
+   @apply my-1 pl-1;
+}
+
+.tiptap {
+    @apply text-sm;
+}
+
+.tiptap p.is-empty::before {
+    @apply opacity-70;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
+
+.details {
+    @apply border border-neutral-700;
+    display: flex;
+    gap: 0.25rem;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.details summary {
+    @apply font-bold text-xl list-none;
+}
+
+.details summary::after {
+    @apply mx-2 opacity-50;
+    content: "...";
+}
+
+.details.is-open > summary::after {
+    display: none;
+}
+
+.details > button {
+  align-items: center;
+  background: transparent;
+  border-radius: 4px;
+  display: flex;
+  font-size: 0.625rem;
+  height: 1.25rem;
+  justify-content: center;
+  line-height: 1;
+  margin-top: 0.1rem;
+  width: 1.25rem;
+  @apply mx-2 pt-4 cursor-pointer;
+}
+
+.details > button::before {
+   content: '\25B6';
+}
+
+.details.is-open > button::before {
+  transform: rotate(90deg);
+}
+
+.details > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  @apply py-2 mr-4 text-justify;
+}
+
+.details > [data-type='detailsContent'] {
+    @apply bg-red-800;
+}
+
+.details > [data-type='detailsContent'] > :last-child {
+    @apply mb-1;
+}
+
+.details .details {
+  margin: 0.5rem 0;
+}

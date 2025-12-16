@@ -27,8 +27,3 @@ const setupEditorExtensions = (opts: EditorExtensionsOpts) => ([
 ]);
 
 export default setupEditorExtensions;
-
-
-
-
-
