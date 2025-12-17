@@ -5,8 +5,7 @@
     "application",
     "packages/*"
   ],
-  "dependencies": {},
   "devDependencies": {
-    "lerna": "^8.2.2"
+    "lerna": "^9.0.3"
   }
 }
