@@ -10,6 +10,7 @@
     "vue": "^3.3.4"
   },
   "devDependencies": {
+    "@iconify/vue": "^4.3.0",
     "@types/cypress": "^0.1.6",
     "@types/node": "^20.3.3",
     "@vitejs/plugin-vue": "^6.0.1",
@@ -27,16 +28,18 @@
   "main": "./dist/my-lib.es.js",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./dist/main.d.ts",
       "import": "./dist/main.es.js",
       "require": "./dist/main.cjs.js"
     },
     "./theme": {
-      "types": "./dist/types/theme/index.d.ts",
+      "types": "./dist/main.d.ts",
       "import": "./dist/theme.es.js",
       "require": "./dist/theme.cjs.js"
     },
-    "./app.css": "./src/styles/app.css"
+    "./styles/app.css": {
+      "style": "./src/styles/app.css"
+    }
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
