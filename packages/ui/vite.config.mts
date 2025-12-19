@@ -1,6 +1,7 @@
 import { defineConfig, mergeConfig } from 'vite';
 import { resolve } from 'path';
 import path from 'node:path';
+import dts from 'vite-plugin-dts';
 
 
 const config = defineConfig({
@@ -16,7 +17,7 @@ const config = defineConfig({
     },
     rollupOptions: {
       // external modules won't be bundled into your library
-      external: ['vue', /primevue\/.+/, '**/*.cy.tsx'], // not every external has a global
+      external: ['vue', '**/*.cy.tsx'], // not every external has a global
       output: {
         // disable warning on src/index.ts using both default and named export
         exports: 'named',
@@ -41,6 +42,13 @@ export default async () => {
     const { default: vue} = await import('@vitejs/plugin-vue');
 
     return mergeConfig(config, {
-        plugins: [tailwind(), vue()],
+        plugins: [
+            tailwind(),
+            vue(),
+            dts({
+                rollupTypes: true,
+            })
+
+        ],
     });
 }
