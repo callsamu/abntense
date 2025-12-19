@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/editor.umd.cjs",
   "module": "./dist/editor.js",
   "typings": "./dist/main.d.ts",
@@ -26,11 +28,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@monorepo/ui": "^0.0.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tiptap/extension-details": "^3.11.1",
+    "@tiptap/extension-document": "^3.14.0",
+    "@tiptap/extension-paragraph": "^3.14.0",
     "@tiptap/extension-placeholder": "^3.11.1",
     "@tiptap/starter-kit": "^3.11.1",
+    "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
+    "tailwindcss-primeui": "^0.6.1",
     "vue": "^3.5.24"
   },
   "devDependencies": {

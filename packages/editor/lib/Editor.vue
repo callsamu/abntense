@@ -3,6 +3,8 @@
     import { FloatingMenu } from '@tiptap/vue-3/menus';
     import { useEditor, EditorContent } from '@tiptap/vue-3';
     import type { JSONContent } from '@tiptap/vue-3';
+    import { Menu } from '@monorepo/ui';
+    import { ref } from 'vue';
 
     const $props = defineProps([ 'initialContent' ]);
     const $emit = defineEmits<{
@@ -28,6 +30,34 @@
         editor.value.chain().focus().insertContentAt(0, msg).run();
     }
 
+    const items = ref([
+        {
+            label: 'Texto',
+            items: [
+                {
+                    label: 'Título',
+                    icon: "cuida:heading1-outline",
+                    command: () => editor.value?.chain().focus().setHeading({ level: 1 }).run()
+                },
+                {
+                    label: 'Subtítulo',
+                    icon: "cuida:heading2-outline",
+                    command: () => editor.value?.chain().focus().setHeading({ level: 2 }).run()
+                }
+            ],
+        },
+        {
+            label: 'Elementos Pré-Textuais',
+            items: [
+                {
+                    label: 'Resumo',
+                    icon: 'ic:sharp-subtitles',
+                    command: () => insertSummary()
+                }
+            ],
+        },
+    ])
+
 </script>
 
 <template>
@@ -40,21 +70,9 @@
                 strategy: 'absolute',
                 offset: 120,
             }">
-                <div class="border border-neutral-700 bg-neutral-800 text-sm rounded-xl py-2 px-1 w-64">
-                <ul>
-                    <li>
-                        <button @click="insertSummary" class="w-full rounded-xl hover:bg-neutral-700 cursor-pointer py-1 px-4 text-left flex items-center gap-3"
-                        >
-                            Adicionar Resumo
-                        </button>
-                    </li>
-                    <li>
-                        <button class="w-full rounded-xl hover:bg-neutral-700 cursor-pointer py-1 px-4 text-left flex items-center gap-3">
-                            Título
-                        </button>
-                    </li>
-                </ul>
-            </div>
+                <div class="w-64">
+                    <Menu :model="items" />
+                </div>
         </floating-menu>
         <editor-content
             class="overflow-y-scroll grow py-4 pr-4"

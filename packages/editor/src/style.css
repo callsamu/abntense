@@ -1,1 +1,2 @@
-@import "tailwindcss";
+@import "tailwindcss" source("../../");
+@import "@monorepo/ui/styles/app.css";

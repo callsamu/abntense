@@ -1,4 +1,4 @@
-@reference "@monorepo/ui/app.css";
+@reference "@monorepo/ui/styles/app.css";
 
 .tiptap {
     height: 100%;
