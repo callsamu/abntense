@@ -11,23 +11,37 @@
         (e: 'update', value: JSONContent): void
     }>();
 
+
     const editor = useEditor({
-        content: $props.initialContent,
+        content: $props.initialContent ?? '<span class="filler"></span><p>haha</p>',
         onUpdate: ({ editor }) => {
-            $emit('update', editor.getJSON());
+            const json = editor.getJSON();
+            $emit('update', json);
+            console.log(json);
         },
         extensions: setupEditorExtensions({
            placeholderClass: '.empty-node',
         }),
+        enableContentCheck: true,
+        onContentError({ error }) {
+            console.error(error);
+        }
     });
 
-    function insertSummary() {
-        console.log("sum");
-        if (!editor.value) return;
-        console.log(editor.value.getHTML());
-        const content = 'Esse é um componente obrigatório e deve ser feito em um único parágrafo contendo de 150 a 500 palavras. É necessário ainda que o texto esteja na terceira pessoa do singular e em voz ativa.';
-        const msg = `<details><summary>Resumo</summary><p>${content}</p></details>`;
-        editor.value.chain().focus().insertContentAt(0, msg).run();
+    function addPretextual(name: string, content: string) {
+        if (!editor.value) {
+            console.error("editor not initialized");
+            return;
+        }
+
+        const $elements = editor.value.$doc.querySelectorAll('pretextual_element');
+        const $element = $elements[0];
+
+        const msg = `<details><summary>${name}</summary><p>${content}</p></details>`;
+        editor.value.chain()
+            .focus('end')
+            .insertContentAt($element?.after ?? 1, msg, {updateSelection: true})
+            .run();
     }
 
     const items = ref([
@@ -43,7 +57,7 @@
                     label: 'Subtítulo',
                     icon: "cuida:heading2-outline",
                     command: () => editor.value?.chain().focus().setHeading({ level: 2 }).run()
-                }
+                },
             ],
         },
         {
@@ -51,8 +65,13 @@
             items: [
                 {
                     label: 'Resumo',
-                    icon: 'ic:sharp-subtitles',
-                    command: () => insertSummary()
+                    icon: 'iconoir:page',
+                    command: () => addPretextual('Resumo', 'Resumo do seu Trabalho')
+                },
+                {
+                    label: 'Agradecimentos',
+                    icon: 'iconoir:page',
+                    command: () => addPretextual('Agradecimentos', 'Agradeço a fulano e cicrana')
                 }
             ],
         },

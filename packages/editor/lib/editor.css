@@ -1,5 +1,10 @@
 @reference "@monorepo/ui/styles/app.css";
 
+.tiptap .filler {
+    height: 0px;
+    display: none;
+}
+
 .tiptap {
     height: 100%;
     color: white;
@@ -57,11 +62,6 @@
 
 .details summary {
     @apply font-bold text-xl list-none;
-}
-
-.details summary::after {
-    @apply mx-2 opacity-50;
-    content: "...";
 }
 
 .details.is-open > summary::after {
