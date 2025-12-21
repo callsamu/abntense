@@ -52,10 +52,9 @@
 }
 
 .details {
-    @apply border border-neutral-700;
+    @apply border border-neutral-700 mt-3 mb-3;
     display: flex;
     gap: 0.25rem;
-    margin: 1.5rem 0;
     border-radius: 0.5rem;
     padding: 0.5rem;
 }
