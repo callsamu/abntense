@@ -70,7 +70,7 @@
                 },
                 {
                     label: 'Agradecimentos',
-                    icon: 'iconoir:page',
+                    icon: 'mdi:love',
                     command: () => addPretextual('Agradecimentos', 'Agradeço a fulano e cicrana')
                 }
             ],
