@@ -4,6 +4,7 @@ import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Heading from '@tiptap/extension-heading';
 import Text from '@tiptap/extension-text';
+import Footnote from './Footnote';
 import { TrailingNode } from '@tiptap/extensions';
 
 interface EditorExtensionsOpts {
@@ -53,6 +54,7 @@ const setupEditorExtensions = (opts: EditorExtensionsOpts) => ([
     Paragraph,
     Heading,
     Text,
+    Footnote,
     TrailingNode.configure({
         node: 'paragraph',
     }),

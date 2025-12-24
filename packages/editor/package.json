@@ -28,8 +28,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.7.4",
     "@monorepo/ui": "^0.0.0",
     "@tailwindcss/vite": "^4.1.18",
+    "@tiptap/core": "^3.14.0",
     "@tiptap/extension-details": "^3.11.1",
     "@tiptap/extension-document": "^3.14.0",
     "@tiptap/extension-heading": "^3.14.0",
@@ -37,6 +39,7 @@
     "@tiptap/extension-placeholder": "^3.11.1",
     "@tiptap/extension-text": "^3.14.0",
     "@tiptap/extensions": "^3.14.0",
+    "@tiptap/pm": "^3.14.0",
     "@tiptap/starter-kit": "^3.11.1",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",

@@ -13,6 +13,40 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    counter-reset: footnoting;
+    position: relative;
+}
+
+.tiptap footnote::before {
+    font-size: smaller;
+    vertical-align: super;
+    counter-increment: footnoting;
+    content: counter(footnoting);
+    @apply px-[2px];
+}
+
+.tiptap footnote {
+    @apply cursor-pointer;
+}
+
+#tooltip-arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  margin-top: -3px;
+  @apply bg-neutral-700;
+}
+
+.tiptap .footnote-tooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    @apply bg-neutral-700 rounded-sm text-neutral-100 min-w-3xs cursor-auto;
+}
+
+.tiptap .footnote-tooltip .ProseMirror {
+    @apply p-2 outline-none border-none;
 }
 
 .tiptap h1 {

@@ -13,7 +13,7 @@
 
 
     const editor = useEditor({
-        content: $props.initialContent ?? '<span class="filler"></span><p>haha</p>',
+        content: $props.initialContent ?? '<span class="filler"></span><p>hahahahe</p>',
         onUpdate: ({ editor }) => {
             const json = editor.getJSON();
             $emit('update', json);
@@ -22,6 +22,9 @@
         extensions: setupEditorExtensions({
            placeholderClass: '.empty-node',
         }),
+        onTransaction({ editor }) {
+            console.log(editor.state.selection);
+        },
         enableContentCheck: true,
         onContentError({ error }) {
             console.error(error);
@@ -76,6 +79,7 @@
             ],
         },
     ])
+
 
 </script>
 
