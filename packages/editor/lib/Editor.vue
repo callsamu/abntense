@@ -17,18 +17,11 @@
         onUpdate: ({ editor }) => {
             const json = editor.getJSON();
             $emit('update', json);
-            console.log(json);
         },
         extensions: setupEditorExtensions({
            placeholderClass: '.empty-node',
         }),
-        onTransaction({ editor }) {
-            console.log(editor.state.selection);
-        },
         enableContentCheck: true,
-        onContentError({ error }) {
-            console.error(error);
-        }
     });
 
     function addPretextual(name: string, content: string) {
@@ -38,12 +31,14 @@
         }
 
         const $elements = editor.value.$doc.querySelectorAll('pretextual_element');
-        const $element = $elements[0];
+        const $element = $elements[$elements.length - 1];
 
         const msg = `<details><summary>${name}</summary><p>${content}</p></details>`;
+        const idx = $element ? $element.pos + $element.size  : 1;
+
         editor.value.chain()
             .focus('end')
-            .insertContentAt($element?.after ?? 1, msg, {updateSelection: true})
+            .insertContentAt(idx, msg, {updateSelection: true})
             .run();
     }
 
