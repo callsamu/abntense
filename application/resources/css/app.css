@@ -1,6 +1,6 @@
-@import '@monorepo/ui/app.css';
+@import '@monorepo/ui/styles/app.css';
 @import '@monorepo/editor/editor.css';
-@source '@monorepo/editor';
+@source './../../../';
 
 
 /*
