@@ -7,6 +7,9 @@ import Text from '@tiptap/extension-text';
 import Footnote from './Footnote';
 import { TrailingNode } from '@tiptap/extensions';
 import { SlashCommandsExtension } from './SlashCommands';
+import Bold from '@tiptap/extension-bold';
+import Italic from '@tiptap/extension-italic';
+import Underline from '@tiptap/extension-underline';
 
 interface EditorExtensionsOpts {
     placeholderClass: string;
@@ -102,6 +105,9 @@ const setupEditorExtensions = (opts: EditorExtensionsOpts) => ([
         }
     }),
     SlashCommandsExtension,
+    Bold,
+    Italic,
+    Underline
 ]);
 
 export default setupEditorExtensions;
