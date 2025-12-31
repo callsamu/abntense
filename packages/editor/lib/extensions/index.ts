@@ -40,9 +40,34 @@ const Filler = Paragraph.extend({
     }
 });
 
+
+declare module '@tiptap/core' {
+    interface Commands<ReturnType> {
+        pretextual_element: {
+            insertPretextualElement: (name: string, desc: string) => ReturnType
+        }
+    }
+}
+
 const PretextualElement = Details.extend({
     name: 'pretextual_element',
     group: 'pretextual',
+
+    addCommands() {
+        return {
+            insertPretextualElement(name: string, desc: string) {
+                return ({ editor, commands }) => {
+                    const $elements = editor.$doc.querySelectorAll('pretextual_element');
+                    const $element = $elements[$elements.length - 1];
+
+                    const msg = `<details><summary>${name}</summary><p>${desc}</p></details>`;
+                    const idx = $element ? $element.pos + $element.size  : 1;
+
+                    return commands.insertContentAt(idx, msg, {updateSelection: true})
+                }
+            }
+        }
+    }
 });
 
 const ABNTDocument = Document.extend({

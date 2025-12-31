@@ -53,25 +53,18 @@ const items = generateMenuItems([
         label: 'Nota de Rodapé',
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertFootnote().run()
     },
+    {
+        key: "resumo",
+        icon: "carbon:text-long-paragraph",
+        label: 'Resumo',
+        command: (editor, range) => editor.
+            chain().
+            focus().
+            deleteRange(range).
+            insertPretextualElement("Resumo", "elemento de resumo").
+            run()
+    },
 ]);
-
-function addPretextual(name: string, content: string) {
-    if (!editor.value) {
-        console.error("editor not initialized");
-        return false;
-    }
-
-    const $elements = editor.value.$doc.querySelectorAll('pretextual_element');
-    const $element = $elements[$elements.length - 1];
-
-    const msg = `<details><summary>${name}</summary><p>${content}</p></details>`;
-    const idx = $element ? $element.pos + $element.size  : 1;
-
-    return editor.value.chain()
-        .focus('end')
-        .insertContentAt(idx, msg, {updateSelection: true})
-        .run();
-}
 </script>
 
 <template>
