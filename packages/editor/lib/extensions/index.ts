@@ -10,6 +10,7 @@ import { SlashCommandsExtension } from './SlashCommands';
 import Bold from '@tiptap/extension-bold';
 import Italic from '@tiptap/extension-italic';
 import Underline from '@tiptap/extension-underline';
+import { BulletList, ListItem, OrderedList } from '@tiptap/extension-list';
 
 interface EditorExtensionsOpts {
     placeholderClass: string;
@@ -107,7 +108,10 @@ const setupEditorExtensions = (opts: EditorExtensionsOpts) => ([
     SlashCommandsExtension,
     Bold,
     Italic,
-    Underline
+    Underline,
+    BulletList,
+    OrderedList,
+    ListItem
 ]);
 
 export default setupEditorExtensions;

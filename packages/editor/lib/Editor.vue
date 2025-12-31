@@ -61,6 +61,18 @@ const items = generateMenuItems([
         command: (editor, range) => editor.chain().focus().deleteRange(range).insertFootnote().run()
     },
     {
+        key: "lista",
+        icon: "carbon:list",
+        label: "Lista Numerada",
+        command: (editor, range) => editor.chain().focus().deleteRange(range).toggleBulletList().run()
+    },
+    {
+        key: "listanumerada",
+        icon: "carbon:list-numbered",
+        label: "Lista Numerada",
+        command: (editor, range) => editor.chain().focus().deleteRange(range).toggleOrderedList().run()
+    },
+    {
         key: "resumo",
         icon: "carbon:text-long-paragraph",
         label: 'Resumo',
