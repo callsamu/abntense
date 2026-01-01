@@ -44,7 +44,6 @@ const Filler = Paragraph.extend({
     }
 });
 
-
 declare module '@tiptap/core' {
     interface Commands<ReturnType> {
         pretextual_element: {
@@ -77,7 +76,6 @@ const PretextualElement = Details.extend({
 const ABNTDocument = Document.extend({
     content: 'filler pretextual* block*'
 });
-
 
 const setupEditorExtensions = (opts: EditorExtensionsOpts) => ([
     ABNTDocument,
