@@ -1,4 +1,3 @@
-import type { ReferenceElement } from "reka-ui";
 import type { InjectionKey, Ref } from "vue";
 import type { Range } from '@tiptap/core';
 import type { AnchorContext } from "./types";
