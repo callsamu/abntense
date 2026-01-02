@@ -3,7 +3,7 @@ import { Icon } from '@iconify/vue';
 import { defineProps, ref, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { AbntMetadata, DocumentData } from '@/types';
-import { Editor } from '@monorepo/editor';
+import { Editor, useEditor } from '@monorepo/editor';
 import axios from 'axios';
 import MenuButton from '@/Components/MenuButton.vue';
 import PDFViewer from './Partials/PDFViewer.vue';
@@ -26,6 +26,8 @@ enum Tabs {
 const previewOpen = ref(false);
 const tab = ref(Tabs.Editor);
 const pdf = ref<string | null>(null);
+
+const editor = useEditor({});
 
 watch(previewOpen, async (newPreviewOpen) => {
     if (newPreviewOpen && changed) {
@@ -121,11 +123,8 @@ function handleUpdate(content: typeof props.document.content) {
                     <div class="flex gap-3">
                     </div>
                 </div>
-                <div class="editor-container">
-                    <Editor
-                        :initialContent="props.document.content"
-                        @update="handleUpdate($event)"
-                    />
+                <div v-if="editor" class="editor-container">
+                    <Editor :editor="editor" />
                 </div>
             </div>
             <div class="
