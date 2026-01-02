@@ -98,7 +98,19 @@ const setupEditorExtensions = (opts: EditorExtensionsOpts) => ([
         }
     }),
     DetailsContent,
-    DetailsSummary,
+    DetailsSummary.extend({
+        onUpdate({ editor }) {
+            if (editor.isActive('pretextual_element')) {
+                const node = editor.state.selection.$from.parent;
+                if (node.type.name == this.name && node.childCount == 0) {
+                    editor.commands.deleteNode(PretextualElement.name);
+                }
+            }
+
+        },
+    }).configure({
+        HTMLAttributes: {readonly: true}
+    }),
     Filler.configure({
         HTMLAttributes: {
             class: 'filler'
