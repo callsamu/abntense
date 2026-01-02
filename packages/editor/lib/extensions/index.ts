@@ -58,6 +58,7 @@ const PretextualElement = Details.extend({
 
     addCommands() {
         return {
+            ...(this.parent ? this.parent(): {}),
             insertPretextualElement(name: string, desc: string) {
                 return ({ editor, commands }) => {
                     const $elements = editor.$doc.querySelectorAll('pretextual_element');
@@ -68,7 +69,7 @@ const PretextualElement = Details.extend({
 
                     return commands.insertContentAt(idx, msg, {updateSelection: true})
                 }
-            }
+            },
         }
     }
 });
