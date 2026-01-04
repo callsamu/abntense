@@ -18,7 +18,7 @@ export default defineConfig({
           formats: ['es', 'cjs', 'umd'],
       },
       rollupOptions: {
-        external: ['vue', 'tiptap'],
+        external: ['vue', 'tiptap', 'reika-ui'],
         output: {
             globals: {
                 vue: 'Vue',
