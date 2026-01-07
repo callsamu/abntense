@@ -55,6 +55,10 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
             ->whereNumber('id')
             ->name('document.compile');
     });
+
+    Route::prefix('references')->group(function () {
+        Route::get('/website', [\App\Http\Controllers\ReferenceController::class, 'from_website']);
+    });
 });
 
 Route::middleware('auth')->group(function () {

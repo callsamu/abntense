@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.9",
         "psalm/phar": "^5.26",
         "spatie/temporary-directory": "^2.2",
+        "symfony/dom-crawler": "^8.0",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
