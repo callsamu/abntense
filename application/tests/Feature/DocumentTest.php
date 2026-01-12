@@ -18,29 +18,26 @@ test('generates pdf', function () {
 });
 
 test('saves document', function () {
-    $response = $this->get('/');
-
     $user = User::factory()->create();
     $doc = Document::factory()->create();
     $doc->users()->attach($user->id, ['role' => Document::ROLE_OWNER]);
-    $meta = $doc->metadata;
 
+    $meta = $doc->metadata;
     $meta['name'] = 'new name';
     $meta['description'] = 'new description';
+    $title = 'foobar';
+    $content = [];
 
     $response = actingAs($user)->patchJson('/documents/' . $doc->id, [
+        'title' =>  $title,
         'metadata' => $meta,
-        'content' => []
+        'content' => $content,
     ]);
     $response->assertStatus(200);
 
-    $doc = Document::find($doc->id);
-
-    $this->assertEquals($meta['name'], $doc->first()->metadata['name']);
-    $this->assertEquals($meta['description'], $doc->first()->metadata['description']);
-    $this->assertEquals([], $doc->content);
-
-
+    $this->assertDatabaseHas('documents', [
+        'title' => $title,
+        'metadata' => json_encode($meta),
+        'content' => json_encode($content),
+    ]);
 });
-
-

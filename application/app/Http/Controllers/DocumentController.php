@@ -46,16 +46,16 @@ class DocumentController extends Controller
     {
         $document = Document::findOrFail($id);
 
-        if ($title = $request->input('title')) {
-            $document->title = $title;
+        if ($request->has('title')) {
+            $document->title = $request->input('title');
         }
 
-        if ($content = $request->input('content')) {
-            $document->content = $content;
+        if ($request->has('metadata')) {
+            $document->metadata = $request->input('metadata');
         }
 
-        if ($metadata = $request->input('metadata')) {
-            $document->metadata = $metadata;
+        if ($request->has('content')) {
+            $document->content = $request->input('content');
         }
 
         $document->save();
