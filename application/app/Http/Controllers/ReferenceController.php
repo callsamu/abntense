@@ -128,6 +128,7 @@ class ReferenceController extends Controller
             'author' => $author,
             'date' => $date,
             'visited' => $visited,
+            'url' => $url,
         ]);
     }
     //

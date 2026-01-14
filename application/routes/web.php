@@ -61,7 +61,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     });
 
     Route::prefix('references')->group(function () {
-        Route::get('/website', [\App\Http\Controllers\ReferenceController::class, 'from_website']);
+        Route::get('/website', [\App\Http\Controllers\ReferenceController::class, 'from_website'])
+            ->name('references.from_website');
     });
 });
 
