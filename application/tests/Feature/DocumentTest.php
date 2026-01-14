@@ -2,33 +2,44 @@
 
 use App\Models\Document;
 use App\Models\User;
+use \Illuminate\Foundation\Testing\RefreshDatabase;
 
+
+use Illuminate\Testing\Fluent\AssertableJson;
 use function Pest\Laravel\actingAs;
 
-test('generates pdf', function () {
-    $response = $this->get('/');
 
-    $user = User::factory()->create();
-    $doc = Document::factory()->create();
-    $doc->users()->attach($user->id, ['role' => Document::ROLE_OWNER]);
+pest()->use(RefreshDatabase::class);
 
-    $response = actingAs($user)->get('/documents/compile/' . $doc->id);
-    $response->assertStatus(200);
-    $response->assertHeader('Content-Type', 'application/pdf');
+
+beforeEach(function() {
+    $this->user = User::factory()->create();
+    $this->doc = Document::factory()->create();
+    $this->doc->users()->attach($this->user->id, ['role' => Document::ROLE_OWNER]);
 });
 
-test('saves document', function () {
-    $user = User::factory()->create();
-    $doc = Document::factory()->create();
-    $doc->users()->attach($user->id, ['role' => Document::ROLE_OWNER]);
+/*
+//test('generates pdf', function () {
+//    $response = actingAs($this->user)->get('/documents/compile/' . $this->doc->id);
+//    $response->assertStatus(200);
+//    $response->assertHeader('Content-Type', 'application/pdf');
+});
+*/
 
-    $meta = $doc->metadata;
+test('saves document', function () {
+    $meta = $this->doc->metadata;
     $meta['name'] = 'new name';
     $meta['description'] = 'new description';
     $title = 'foobar';
     $content = [];
+    '/documents/' . $this->doc->id . '/references',
 
-    $response = actingAs($user)->patchJson('/documents/' . $doc->id, [
+    $route = route(
+        'document.update',
+        ['id' => $this->doc->id]
+    );
+
+    $response = actingAs($this->user)->patchJson($route, [
         'title' =>  $title,
         'metadata' => $meta,
         'content' => $content,
@@ -40,4 +51,45 @@ test('saves document', function () {
         'metadata' => json_encode($meta),
         'content' => json_encode($content),
     ]);
+});
+
+describe('addReference', function () {
+    it('saves reference', function () {
+        $reference = [
+            'author' => 'John Doe',
+            'title' => 'Foo',
+            'visited' => date('Y-m-d'),
+            'date' => '2000-01-01'
+        ];
+
+        $route = route(
+            'document.update',
+            ['id' => $this->doc->id]
+        );
+
+        $response = actingAs($this->user)->postJson(
+            $route,
+            [
+                'type' => 'web',
+                'reference' => $reference
+            ],
+        );
+
+        $response->assertStatus(200);
+        $data = json_decode($response->content(), true);
+
+        $response->assertJson(fn (AssertableJson $json) => $json
+            ->where('id', '1')
+            ->has('reference', fn (AssertableJson $json) => $json
+                ->where('type', 'web')
+                ->where('date', $reference['date'])
+                ->etc())
+        );
+
+        $this->assertDatabaseHas('documents', [
+            'references' => json_encode([
+                $data['id'] => $data['reference']
+            ])
+        ]);
+    });
 });

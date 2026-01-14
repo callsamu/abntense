@@ -10,6 +10,7 @@ use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class DocumentController extends Controller
@@ -37,7 +38,8 @@ class DocumentController extends Controller
                 'id' => $document->id,
                 'title' => $document->title,
                 'content' => $document->content,
-                    'metadata' => $document->metadata
+                'references' => $document->references,
+                'metadata' => $document->metadata,
             ],
         ]);
     }
@@ -61,6 +63,33 @@ class DocumentController extends Controller
         $document->save();
 
         return $document;
+    }
+
+    public function addReference(string $document_id, Request $request) {
+        $document = Document::findOrFail($document_id);
+
+        $data = $request->validate([
+            'type' => ['required', Rule::in('web')],
+            'reference' => ['required', 'array'],
+            'reference.author' => ['required', 'string'],
+            'reference.date' => ['required', 'date'],
+            'reference.visited' => ['required', 'date'],
+            'reference.title' => ['required', 'string'],
+        ]);
+
+        $ref = $data['reference'];
+        $ref['type'] = $data['type'];
+        $references = $document->references;
+
+        $id = (string) (count($references) + 1);
+        $references[$id] = $ref;
+        $document->references = $references;
+        $document->save();
+
+        return response()->json([
+            'id' => $id,
+            'reference' => $ref,
+        ]);
     }
 
     public function compile(string $id, TypstService $typst) {

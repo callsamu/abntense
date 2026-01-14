@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('title');
 
             $table->json('metadata');
+            $table->json('references');
             $table->json('content');
         });
     }

@@ -24,6 +24,7 @@ class DocumentFactory extends Factory
                 'institution' => $this->faker->company(),
                 'year' => $this->faker->year(),
             ],
+            'references' => [],
             'content' => [
                 "type" => "doc",
                 "content" => [

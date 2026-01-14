@@ -26,8 +26,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Document whereMetadata($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Document whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Document whereUpdatedAt($value)
- * @mixin \Eloquent
  * @mixin IdeHelperDocument
+ * @property int $is_solo
+ * @property \Illuminate\Database\Eloquent\Casts\ArrayObject<array-key, mixed> $references
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereIsSolo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Document whereReferences($value)
+ * @mixin \Eloquent
  */
 class Document extends Model
 {
@@ -43,6 +48,7 @@ class Document extends Model
     protected function casts(): array
     {
         return [
+            'references' => AsArrayObject::class,
             'metadata' => AsArrayObject::class,
             'content' => 'array',
         ];
