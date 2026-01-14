@@ -121,7 +121,12 @@ class ReferenceController extends Controller
             }
         }
 
-        $visited = now()->toDateTimeString();
+        if ($date) {
+            $carbo = Date::parse($date);
+            $date = $carbo->toDateString();
+        }
+
+        $visited = now()->toDateString();
 
         return response()->json([
             'title' => $title,

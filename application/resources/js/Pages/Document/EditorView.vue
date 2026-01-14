@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import axios from 'axios';
 import { Icon } from '@iconify/vue';
 import { defineProps, ref, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { AbntMetadata, DocumentData } from '@/types';
 import { Editor, useEditor } from '@monorepo/editor';
-import axios from 'axios';
 import MenuButton from '@/Components/MenuButton.vue';
 import PDFViewer from './Partials/PDFViewer.vue';
 import EditMetadataForm from './Partials/EditMetadataForm.vue';
-
+import { Reference } from '@/lib/references';
+import Dialog from '@/Components/Dialog.vue';
+import ReferenceForm from '@/Components/Forms/ReferenceForm.vue';
 
 interface Props {
     document: DocumentData;
@@ -72,13 +74,43 @@ function handleUpdate(content: typeof props.document.content) {
     props.document.content = content;
 }
 
+function referenceAdd(id: string, ref: Reference) {
+    if (!ref) {
+        throw new Error('reference is null');
+    }
+    console.log(ref);
+    props.document.references = {
+        [id]: ref,
+        ...props.document.references,
+    }
+
+    console.log(props.document.references);
+    openReferenceDialog.value = false;
+}
+
+const openReferenceDialog = ref(false);
 
 </script>
 <template>
     <Head :title=props.document.title />
+
     <div class="h-screen bg-neutral-100 dark:bg-neutral-900 flex">
+        <Dialog :open="openReferenceDialog">
+            <h1 class="font-bold text-2xl text-neutral-100 m-8">
+                Adicionar Referência
+            </h1>
+            <ReferenceForm
+                @submit="referenceAdd"
+                :document="props.document"
+                class="mx-8 mb-8" />
+        </Dialog>
         <div class="flex flex-row">
             <div class="h-full w-fit flex flex-col bg-neutral-800">
+                <MenuButton
+                    icon="carbon:notebook"
+                    title="Bibliography"
+                    @click="openReferenceDialog = true"
+                />
                 <MenuButton
                     icon="material-symbols:home"
                     title="Home"

@@ -1,3 +1,4 @@
+import { Reference } from '@/lib/references';
 import { JSONContent } from '@tiptap/core';
 import { Config } from 'ziggy-js';
 
@@ -21,6 +22,9 @@ export interface DocumentData {
     title: string;
     updated_at: string;
     metadata: AbntMetadata;
+    references: {
+        [key: string]: Reference
+    };
     content: JSONContent;
     users: User[];
 }
