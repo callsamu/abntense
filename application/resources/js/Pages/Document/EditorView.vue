@@ -6,7 +6,7 @@ import { Head, router } from '@inertiajs/vue3'
 import { AbntMetadata, DocumentData } from '@/types';
 import { Editor, useEditor } from '@monorepo/editor';
 import MenuButton from '@/Components/MenuButton.vue';
-import PDFViewer from './Partials/PDFViewer.vue';
+import TypstViewer from './Partials/TypstViewer.vue';
 import EditMetadataForm from './Partials/EditMetadataForm.vue';
 import { Reference } from '@/lib/references';
 import Dialog from '@/Components/Dialog.vue';
@@ -26,8 +26,7 @@ enum Tabs {
 }
 
 const previewOpen = ref(false);
-const tab = ref(Tabs.Editor);
-const pdf = ref<string | null>(null);
+const typst = ref<Uint8Array | null>(null);
 
 const editor = useEditor({});
 
@@ -45,27 +44,21 @@ async function save() {
 }
 
 async function compile() {
-    const resp = await axios.get(route('document.compile', props.document.id), {
+    const resp = await axios.get(route('document.compile', { id :props. document.id }), {
         responseType: 'arraybuffer',
         headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/pdf'
+            'Accept': 'application/octet-stream'
         }
     });
 
-    const blob = new Blob([resp.data]);
-    const reader = new FileReader();
-    reader.readAsDataURL(blob);
-    reader.onload = () => {
-        pdf.value = reader.result as string;
-    }
+    console.log(resp);
+    typst.value = new Uint8Array(resp.data);
 }
 
 async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
     props.document.title = title;
     props.document.metadata = metadata;
     previewOpen.value = true;
-    tab.value = Tabs.Editor;
     changed = true;
 }
 
@@ -84,7 +77,6 @@ function referenceAdd(id: string, ref: Reference) {
         ...props.document.references,
     }
 
-    console.log(props.document.references);
     openReferenceDialog.value = false;
 }
 
@@ -125,17 +117,11 @@ const openReferenceDialog = ref(false);
                     icon="mdi:eye"
                     title="Preview"
                     :active="previewOpen"
-                    @click="previewOpen = !previewOpen; tab = Tabs.Editor"
-                />
-                <MenuButton
-                    icon="solar:document-add-linear"
-                    title="Editar Informações"
-                    :active="tab === Tabs.Settings"
-                    @click="tab = tab === Tabs.Settings ? Tabs.Editor : Tabs.Settings"
+                    @click="previewOpen = !previewOpen"
                 />
             </div>
             <div
-                v-if="tab === Tabs.Settings"
+                v-if="false"
                 class="w-96 bg-neutral-900 p-10 text-neutral-900 dark:text-neutral-100 border-2 border-neutral-800"
             >
                 <EditMetadataForm
@@ -163,11 +149,9 @@ const openReferenceDialog = ref(false);
                 bg-neutral-950 overflow-y-scroll
                 border rounded-xl border-neutral-800 my-5
                 flex flex-col w-2/5
-            " :class="{ 'hidden': !previewOpen || tab !== Tabs.Editor }">
-                <PDFViewer
-                    :pdf="pdf"
-                    @reload="save().then(compile)"
-                    @close="previewOpen = false"
+            " :class="{ 'hidden': !previewOpen }">
+                <TypstViewer
+                    :artifact="typst"
                 />
             </div>
         </div>

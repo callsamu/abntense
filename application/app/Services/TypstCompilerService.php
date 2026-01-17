@@ -52,12 +52,13 @@ class TypstCompilerService
 
         try {
             Process::path($dir)->run([
-                'typst',
+                'typst-ts-cli',
                 'compile',
+                '--entry',
                 $input_path,
             ])->throw();
 
-            return file_get_contents("$dir/main.pdf");
+            return file_get_contents("$dir/main.artifact.sir.in");
         } catch (ProcessFailedException $e) {
             Log::error("Typst Compilation Failed", [
                 'stderr' => $e->getMessage(),

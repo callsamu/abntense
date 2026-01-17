@@ -104,6 +104,6 @@ class DocumentController extends Controller
         $output = $compiler->compile($typst);
 
         return response($output, 200)
-            ->header('Content-Type', 'application/pdf');
+            ->header('Content-Type', 'application/octet-stream');
     }
 }

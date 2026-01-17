@@ -18,13 +18,13 @@ beforeEach(function() {
     $this->doc->users()->attach($this->user->id, ['role' => Document::ROLE_OWNER]);
 });
 
-/*
-//test('generates pdf', function () {
-//    $response = actingAs($this->user)->get('/documents/compile/' . $this->doc->id);
-//    $response->assertStatus(200);
-//    $response->assertHeader('Content-Type', 'application/pdf');
+
+test('generates artifact', function () {
+    $response = actingAs($this->user)->get('/documents/compile/' . $this->doc->id);
+    $response->assertStatus(200);
+    $response->assertHeader('Content-Type', 'application/pdf');
 });
-*/
+
 
 test('saves document', function () {
     $meta = $this->doc->metadata;
@@ -32,7 +32,6 @@ test('saves document', function () {
     $meta['description'] = 'new description';
     $title = 'foobar';
     $content = [];
-    '/documents/' . $this->doc->id . '/references',
 
     $route = route(
         'document.update',
@@ -63,7 +62,7 @@ describe('addReference', function () {
         ];
 
         $route = route(
-            'document.update',
+            'document.references',
             ['id' => $this->doc->id]
         );
 
