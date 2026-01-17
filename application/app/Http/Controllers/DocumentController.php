@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
-use App\Services\TypstService;
+use App\Services\TypstCompilerService;
+use App\Services\TypstConversorService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -92,16 +93,17 @@ class DocumentController extends Controller
         ]);
     }
 
-    public function compile(string $id, TypstService $typst) {
+    public function compile(
+        string $id,
+        TypstCompilerService $compiler,
+        TypstConversorService $conversor
+    ) {
         $document = Document::findOrFail($id);
-        $typst_content = $typst->fromTiptap($document->content);
+        $typst = $conversor->convert($document);
 
-        try {
-            $pdf = $typst->compile($document, $typst_content);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()]);
-        }
+        $output = $compiler->compile($typst);
 
-        return response()->file($pdf);
+        return response($output, 200)
+            ->header('Content-Type', 'application/pdf');
     }
 }
