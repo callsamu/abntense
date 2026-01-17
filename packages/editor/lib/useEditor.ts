@@ -3,6 +3,7 @@ import { enableKeyboardNavigation } from './extensions/SlashCommands';
 import setupEditorExtensions from './extensions';
 
 interface EditorOpts {
+    debug?: boolean;
     initialContent: JSONContent | null;
 }
 
@@ -13,7 +14,9 @@ export default function useEditor(opts: Partial<EditorOpts>) {
            placeholderClass: '.empty-node',
         }),
         enableContentCheck: true,
-
+        onUpdate: ({ editor }) => {
+            if (opts.debug) console.debug(editor.getJSON())
+        },
         editorProps: {
              handleDOMEvents : {
                 keydown: (_, v) => enableKeyboardNavigation(v),

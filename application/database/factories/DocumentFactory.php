@@ -29,21 +29,33 @@ class DocumentFactory extends Factory
                 "type" => "doc",
                 "content" => [
                     [
-                        "type" => "heading",
-                        "attrs" => ["level" => 1],
-                        "content" => [
-                            [
-                                "type" => "text",
-                                "text" => "Resumo",
-                            ]
-                        ]
+                      "type" => "filler"
                     ],
                     [
-                        "type" => "paragraph",
-                        "content" => [
+                        'type' => 'pretextual_element',
+                        'content' => [
                             [
-                                "type" => "text",
-                                "text" => "Esse é um componente obrigatório e deve ser feito em um único parágrafo contendo de 150 a 500 palavras. É necessário ainda que o texto esteja na terceira pessoa do singular e em voz ativa."
+                                'type' => 'detailsSummary',
+                                'content' => [
+                                    [
+                                        'type' => 'text',
+                                        'text' => 'Resumo'
+                                    ]
+                                ]
+                            ],
+                            [
+                                'type' => 'detailsContent',
+                                'content' => [
+                                    [
+                                        'type' => 'paragraph',
+                                        'content' => [
+                                            [
+                                                'type' => 'text',
+                                                'text' => 'Esse é um componente obrigatório e deve ser feito em um único parágrafo contendo de 150 a 500 palavras. É necessário ainda que o texto esteja na terceira pessoa do singular e em voz ativa.'
+                                            ]
+                                        ]
+                                    ]
+                                ]
                             ]
                         ]
                     ],

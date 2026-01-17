@@ -28,7 +28,9 @@ enum Tabs {
 const previewOpen = ref(false);
 const typst = ref<Uint8Array | null>(null);
 
-const editor = useEditor({});
+const editor = useEditor({
+    initialContent: props.document.content,
+});
 
 watch(previewOpen, async (newPreviewOpen) => {
     if (newPreviewOpen && changed) {
@@ -134,7 +136,7 @@ const openReferenceDialog = ref(false);
         </div>
         <div class="flex grow justify-center items-stretch h-full text-white">
             <div className="w-2/5 p-5 h-full flex items-stretch flex-col">
-                <div class="flex flex-col border-b border-neutral-700 py-3">
+                <div class="flex flex-col py-3">
                     <h2 class="text-4xl mb-6 font-bold">
                         {{ props.document.title }}
                     </h2>
