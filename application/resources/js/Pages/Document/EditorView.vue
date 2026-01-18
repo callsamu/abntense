@@ -89,14 +89,17 @@ const openReferenceDialog = ref(false);
     <Head :title=props.document.title />
 
     <div class="h-screen bg-neutral-100 dark:bg-neutral-900 flex">
-        <Dialog :open="openReferenceDialog">
-            <h1 class="font-bold text-2xl text-neutral-100 m-8">
+        <Dialog v-model:open="openReferenceDialog">
+            <template #title>
                 Adicionar Referência
-            </h1>
-            <ReferenceForm
-                @submit="referenceAdd"
-                :document="props.document"
-                class="mx-8 mb-8" />
+            </template>
+            <template #content>
+                <ReferenceForm
+                    @submit="referenceAdd"
+                    :document="props.document"
+                    class="mx-8 mb-8"
+                />
+            </template>
         </Dialog>
         <div class="flex flex-row">
             <div class="h-full w-fit flex flex-col bg-neutral-800">
