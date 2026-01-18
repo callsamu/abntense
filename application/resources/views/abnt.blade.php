@@ -42,7 +42,7 @@
         heading(outlined: false, upper(text(weight: "bold", nome))),
     )
     linebreak()
-    par(texto)
+    texto
     pagebreak()
 }
 

@@ -46,70 +46,29 @@ class TypstConversorService
             return "";
         }
 
-        $template = match ($type) {
-            'doc' => "$$",
-            'heading' => sprintf("#heading(level: %d)[$$]\n", $attrs['level']),
-            'paragraph' => "#par[$$]\n",
+        $text_contents = array_map(Self::convert_node(...), $contents);
+        $text = array_reduce($text_contents, fn ($a, $b) => $a . $b, '');
+
+        return match ($type) {
+            'heading' => "#heading(level: {$attrs['level']})[$text]\n",
+            'footnote' => "#footnote[$text]\n",
+            'paragraph' => "#par[$text]\n",
+            'pretextual_element' => (function() use ($text_contents) {
+                [$summary, $contents] = $text_contents;
+                return "#pretextual(\"$summary\")[\n$contents]\n";
+            })(),
+            default => $text,
         };
-
-        $text_content = "";
-
-        foreach ($contents as $child) {
-            $text_content .= Self::convert_node($child);
-        }
-
-        return str_replace("$$", $text_content, $template);
-    }
-
-    static function pretextual(string $name, Array $nodes, int &$idx) {
-        $content = "";
-
-        while (($idx + 1) < count($nodes)) {
-            $node = $nodes[$idx + 1];
-
-            if (
-                ($idx + 1 >= count($nodes)) ||
-                ($node['type'] === 'heading' && $node['content'])
-            ) {
-                $text = $node['content'][0]['text'];
-                if ($text !== $name) break;
-            }
-
-            $content .= Self::convert_node($node);
-            $idx++;
-        }
-
-        return sprintf("#pretextual(\"%s\")[\n%s]\n", $name, $content);
     }
 
     public function convertTiptap(Array $document): string  {
         $text = "";
-        $in_pretext = true;
 
-        if (!isset( $document['content'])) {
+        if (!isset($document['content'])) {
             return $text;
         }
 
-        $nodes = $document['content'];
-
-        for ($i = 0; $i < count($nodes); $i++) {
-            $node = $nodes[$i];
-
-            if ($in_pretext && $node['type'] === 'heading' && $node['content']) {
-                $node_text = $node['content'][0]['text'];
-
-                if (in_array($node_text, $this->pretextual_elements)) {
-                    $text .= Self::pretextual($node_text, $nodes, $i);
-                } else {
-                    $in_pretext = false;
-                    $text .= Self::convert_node($node);
-                }
-            } else {
-                $text .= Self::convert_node($node);
-            }
-        }
-
-        return $text;
+        return TypstConversorService::convert_node($document);
     }
     public function convert(Document $document) {
         $title = $document->title;
