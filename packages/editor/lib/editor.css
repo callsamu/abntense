@@ -142,3 +142,12 @@
 .details .details {
   margin: 0.5rem 0;
 }
+
+.tiptap .citation {
+	background-color: rgba(255, 255, 255, 0.4);
+	color: rgba(255, 255, 255, 0.6);
+	font-weight: 600;
+	border-radius: 0.25rem;
+	font-size: 0.9rem;
+	padding: 0.1rem;
+}

@@ -10,10 +10,19 @@ import { SlashCommandsExtension } from './SlashCommands';
 import Bold from '@tiptap/extension-bold';
 import Italic from '@tiptap/extension-italic';
 import Underline from '@tiptap/extension-underline';
+import Mention from '@tiptap/extension-mention';
 import { BulletList, ListItem, OrderedList } from '@tiptap/extension-list';
 
-interface EditorExtensionsOpts {
-    placeholderClass: string;
+
+declare module '@tiptap/core' {
+    interface Commands<ReturnType> {
+        pretextual_element: {
+            insertPretextualElement: (name: string, desc: string) => ReturnType
+        }
+        mention: {
+            insertCitation: (id: string, label: string) => ReturnType
+        }
+    }
 }
 
 const Filler = Paragraph.extend({
@@ -28,7 +37,7 @@ const Filler = Paragraph.extend({
     parseHTML() {
         return [
             {
-                tag: 'span',
+                tag: 'p',
                 getAttrs: (node) => {
                   return {
                     class: node.getAttribute('filler'),
@@ -40,17 +49,9 @@ const Filler = Paragraph.extend({
 
     renderHTML({ HTMLAttributes }) {
         HTMLAttributes['class'] = 'filler';
-        return ['span', HTMLAttributes, 0]
+        return ['p', HTMLAttributes, 0]
     }
 });
-
-declare module '@tiptap/core' {
-    interface Commands<ReturnType> {
-        pretextual_element: {
-            insertPretextualElement: (name: string, desc: string) => ReturnType
-        }
-    }
-}
 
 const PretextualElement = Details.extend({
     name: 'pretextual_element',
@@ -74,11 +75,47 @@ const PretextualElement = Details.extend({
     }
 });
 
+const PretextualTitle = DetailsSummary.extend({
+    onUpdate({ editor }) {
+        if (editor.isActive('pretextual_element')) {
+            const node = editor.state.selection.$from.parent;
+            if (node.type.name == this.name && node.childCount == 0) {
+                editor.commands.deleteNode(PretextualElement.name);
+            }
+        }
+    },
+}).configure({
+    HTMLAttributes: {readonly: true}
+});
+
+const PretextualContents = DetailsContent;
+
+const Citation = Mention.extend({
+    addCommands() {
+        return {
+            ...(this.parent ? this.parent(): {}),
+            insertCitation(id, label) {
+                return ({ commands }) => {
+                    const html = `<span class="citation" data-type="mention" data-id="${id}" data-label="${label}"></span>`;
+            		return commands.insertContent(html);
+                }
+            },
+        }
+    }
+}).configure({
+    HTMLAttributes: {
+        class: 'citation'
+    },
+    deleteTriggerWithBackspace: true,
+});
+
 const ABNTDocument = Document.extend({
     content: 'filler pretextual* block*'
 });
 
-const setupEditorExtensions = (opts: EditorExtensionsOpts) => ([
+const setupEditorExtensions = (opts: {
+    placeholderClass: string
+}) => ([
     ABNTDocument,
     Paragraph,
     Heading,
@@ -97,25 +134,14 @@ const setupEditorExtensions = (opts: EditorExtensionsOpts) => ([
             class: 'details',
         }
     }),
-    DetailsContent,
-    DetailsSummary.extend({
-        onUpdate({ editor }) {
-            if (editor.isActive('pretextual_element')) {
-                const node = editor.state.selection.$from.parent;
-                if (node.type.name == this.name && node.childCount == 0) {
-                    editor.commands.deleteNode(PretextualElement.name);
-                }
-            }
-
-        },
-    }).configure({
-        HTMLAttributes: {readonly: true}
-    }),
+    PretextualTitle,
+    PretextualContents,
     Filler.configure({
         HTMLAttributes: {
             class: 'filler'
         }
     }),
+    Citation,
     SlashCommandsExtension,
     Bold,
     Italic,

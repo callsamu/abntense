@@ -9,7 +9,7 @@ interface EditorOpts {
 
 export default function useEditor(opts: Partial<EditorOpts>) {
     return _useEditor({
-        content: opts.initialContent ?? `<span class="filler"></span><p></p>`,
+        content: opts.initialContent ?? `<p class="filler"></p><p></p>`,
         extensions: setupEditorExtensions({
            placeholderClass: '.empty-node',
         }),
