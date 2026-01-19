@@ -39,28 +39,24 @@ async function update() {
 </script>
 
 <template>
-    <h2 class="text-xl font-medium text-neutral-900 dark:text-neutral-100">
-       Editar Informações
-    </h2>
-
-    <form @submit.prevent="update()" class="mt-6 space-y-6">
-        <div>
+    <form @submit.prevent="update()" class="grid grid-cols-2 gap-4 px-6">
+        <div class="w-full col-span-2">
             <InputLabel for="title" value="Título" />
             <TextInput
                 id="title"
                 ref="title"
                 v-model="form.title"
-                class="mt-1 block w-full"
+                class="w-full"
             />
         </div>
-        <div>
+        <div class="col-span-2">
             <InputLabel for="location" value="Descrição" />
             <TextArea
                 id="description"
                 v-model="form.metadata.description"
                 spellcheck="false"
                 rows="4"
-                class="mt-1 block w-full bg resize-none"
+                class="w-full bg resize-none"
             />
         </div>
         <div>
@@ -79,7 +75,10 @@ async function update() {
                 class="mt-1 block w-full"
             />
         </div>
+        <div></div>
 
-        <PrimaryButton :disabled="form.processing">Salvar</PrimaryButton>
+        <div class="w-full col-span-2 flex justify-end">
+            <PrimaryButton class="my-2 mb-4 w-fit px-2" :disabled="form.processing">Salvar</PrimaryButton>
+        </div>
     </form>
 </template>

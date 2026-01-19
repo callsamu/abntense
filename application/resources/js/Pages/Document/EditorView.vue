@@ -62,6 +62,7 @@ async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
     props.document.metadata = metadata;
     previewOpen.value = true;
     changed = true;
+    openMetadataDialog.value = false;
 }
 
 function handleUpdate(content: typeof props.document.content) {
@@ -83,6 +84,7 @@ function referenceAdd(id: string, ref: Reference) {
 }
 
 const openReferenceDialog = ref(false);
+const openMetadataDialog = ref(false);
 
 </script>
 <template>
@@ -101,19 +103,32 @@ const openReferenceDialog = ref(false);
                 />
             </template>
         </Dialog>
+        <Dialog v-model:open="openMetadataDialog">
+            <template #title>
+                Editar Informações
+            </template>
+            <template #content>
+                <EditMetadataForm
+                    :id="props.document.id"
+                    :title="props.document.title"
+                    :metadata="props.document.metadata"
+                    @update="onMetadataUpdate"
+                />
+            </template>
+        </Dialog>
         <div class="flex flex-row">
             <div class="h-full w-fit flex flex-col bg-neutral-800">
-                <MenuButton
-                    icon="carbon:notebook"
-                    title="Bibliography"
-                    @click="openReferenceDialog = true"
-                />
                 <MenuButton
                     icon="material-symbols:home"
                     title="Home"
                     @click="router.visit(route('dashboard'))"
                 />
                 <MenuButton
+                    icon="material-symbols:page-info"
+                    title="Editar Informações"
+                    @click="openMetadataDialog = true"
+                />
+               <MenuButton
                     icon="material-symbols:save"
                     title="Salvar"
                     @click="save()"
@@ -124,17 +139,16 @@ const openReferenceDialog = ref(false);
                     :active="previewOpen"
                     @click="previewOpen = !previewOpen"
                 />
+                <MenuButton
+                    icon="carbon:notebook"
+                    title="Bibliography"
+                    @click="openReferenceDialog = true"
+                />
             </div>
             <div
                 v-if="false"
                 class="w-96 bg-neutral-900 p-10 text-neutral-900 dark:text-neutral-100 border-2 border-neutral-800"
             >
-                <EditMetadataForm
-                    :id="props.document.id"
-                    :title="props.document.title"
-                    :metadata="props.document.metadata"
-                    @update="onMetadataUpdate"
-                />
             </div>
         </div>
         <div class="flex grow justify-center items-stretch h-full text-white">
