@@ -1,23 +1,37 @@
 <script setup lang="ts">
 import axios from 'axios';
-import { Icon } from '@iconify/vue';
-import { defineProps, ref, watch } from 'vue'
+import { ref, shallowReactive, watch } from 'vue'
 import { Head, router } from '@inertiajs/vue3'
 import { AbntMetadata, DocumentData } from '@/types';
 import { Editor, useEditor } from '@monorepo/editor';
 import MenuButton from '@/Components/MenuButton.vue';
 import TypstViewer from './Partials/TypstViewer.vue';
 import EditMetadataForm from './Partials/EditMetadataForm.vue';
-import { Reference } from '@/lib/references';
+import { recordToReference, Reference, ReferenceRecord } from '@/lib/references';
 import Dialog from '@/Components/Dialog.vue';
 import ReferenceForm from '@/Components/Forms/ReferenceForm.vue';
-import { ArrowLeft, Eye, Save, Settings } from 'lucide-vue-next';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { ArrowLeft, Eye, Plus, Save, Settings } from 'lucide-vue-next';
 
 interface Props {
     document: DocumentData;
 };
 
-const props = defineProps<Props>();
+const props =  defineProps<Props>();
+
+const doc = shallowReactive({
+    ...props.document,
+    references: (() => {
+        const obj: {[key: string]: Reference} =  {}
+        const records = props.document.references;
+
+        for (const [id, record] of Object.entries(records)) {
+            obj[id] = recordToReference(record);
+        }
+
+        return obj;
+    })(),
+});
 
 let changed = true;
 
@@ -25,24 +39,24 @@ const previewOpen = ref(false);
 const typst = ref<Uint8Array | null>(null);
 
 const editor = useEditor({
-    initialContent: props.document.content,
+    initialContent: doc.content,
 });
 
 watch(previewOpen, async (newPreviewOpen) => {
-    if (newPreviewOpen && changed) {
+    if (newPreviewOpen) {
         save().then(compile);
         changed = false;
     }
 });
 
 async function save() {
-    return axios.patch(route('document.update', props.document.id), {
-        content:  props.document.content,
+    return axios.patch(route('document.update', doc.id), {
+        content:  editor.value?.getJSON(),
     });
 }
 
 async function compile() {
-    const resp = await axios.get(route('document.compile', { id :props. document.id }), {
+    const resp = await axios.get(route('document.compile', { id: doc.id }), {
         responseType: 'arraybuffer',
         headers: {
             'Accept': 'application/octet-stream'
@@ -53,26 +67,21 @@ async function compile() {
 }
 
 async function onMetadataUpdate(title: string, metadata: AbntMetadata) {
-    props.document.title = title;
-    props.document.metadata = metadata;
+    doc.title = title;
+    doc.metadata = metadata;
     previewOpen.value = true;
     changed = true;
     openMetadataDialog.value = false;
-}
-
-function handleUpdate(content: typeof props.document.content) {
-    changed = true;
-    props.document.content = content;
 }
 
 function referenceAdd(id: string, ref: Reference) {
     if (!ref) {
         throw new Error('reference is null');
     }
-    console.log(ref);
-    props.document.references = {
+
+    doc.references = {
         [id]: ref,
-        ...props.document.references,
+        ...doc.references,
     }
 
     openReferenceDialog.value = false;
@@ -80,7 +89,6 @@ function referenceAdd(id: string, ref: Reference) {
 
 const openReferenceDialog = ref(false);
 const openMetadataDialog = ref(false);
-
 </script>
 <template>
     <Head :title=props.document.title />
@@ -91,7 +99,7 @@ const openMetadataDialog = ref(false);
         <template #content>
             <ReferenceForm
                 @submit="referenceAdd"
-                :document="props.document"
+                :documentId="doc.id"
                 class="mx-8 mb-8"
             />
         </template>
@@ -102,9 +110,9 @@ const openMetadataDialog = ref(false);
         </template>
         <template #content>
             <EditMetadataForm
-                :id="props.document.id"
-                :title="props.document.title"
-                :metadata="props.document.metadata"
+                :id="doc.id"
+                :title="doc.title"
+                :metadata="doc.metadata"
                 @update="onMetadataUpdate"
             />
         </template>
@@ -119,7 +127,7 @@ const openMetadataDialog = ref(false);
                 <ArrowLeft :size="20"/>
             </ MenuButton>
             <p class="px-4 font-semibold uppercase text-xs tracking-widest opacity-80">
-                {{ props.document.title }}
+                {{ doc.title }}
             </p>
             <MenuButton
                 title="Preview"
@@ -145,8 +153,29 @@ const openMetadataDialog = ref(false);
             </MenuButton>
         </div>
         <div class="flex grow h-full overflow-clip">
+            <div class="h-full py-4 px-6 max-w-xl text-neutral-200">
+                <div class="inline-flex items-center text-neutral-200 text-sm gap-4 w-full">
+                    <h3 class="font-semibold"> Referências </h3>
+                    <button class="cursor-pointer hover:text-neutral-50" @click="openReferenceDialog = true">
+                        <Plus :size="16" />
+                    </button>
+                </div>
+                <div
+                    v-for="[id, ref] in Object.entries(doc.references)"
+                    class="flex flex-col items-start my-1 pl-2"
+                >
+                    <button
+                        class="m-0 py-1 text-sm text-neutral-300"
+                        @click="editor?.chain().focus().insertCitation(id, ref.label()).run()"
+                    >
+                        <p class="p-0 m-0 text-left hover:text-neutral-100 cursor-pointer">
+                            {{ ref.label().trim() }}
+                        </p>
+                    </button>
+                </div>
+            </div>
             <div class="flex grow justify-center items-stretch h-full text-white">
-                <div className="w-2/5 p-5 h-full flex items-stretch flex-col">
+                <div className="lg:w-2/5 md:w-2/3  h-full flex items-stretch flex-col">
                     <div v-if="editor" class="editor-container">
                         <Editor :editor="editor" />
                     </div>

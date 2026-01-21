@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { WebReference, Reference, ReferenceType } from '@/lib/references';
+import { WebReference, Reference, ReferenceType, WebRecord, ReferenceRecord, recordToReference } from '@/lib/references';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '../PrimaryButton.vue';
@@ -16,7 +16,7 @@ import {
 } from 'reka-ui'
 
 const props = defineProps<{
-    document: DocumentData
+    documentId: number
 }>();
 
 const emit = defineEmits({
@@ -95,15 +95,16 @@ async function save(f: FieldObject) {
     const entries = Object.entries(f).map(([key, value]) => [key, value.toString()])
     json.reference = Object.fromEntries(entries);
 
-    const _route = route('document.references', { id: props.document.id });
+    const _route = route('document.references', { id: props.documentId });
 
     const response = await axios.post(_route, json);
     const data : {
         id: string;
-        reference: WebReference;
+        reference: ReferenceRecord;
     }  = response.data;
 
-    emit('submit', data.id, data.reference);
+    const ref = recordToReference(data.reference);
+    emit('submit', data.id, ref);
 }
 
 let query = '';

@@ -4,11 +4,23 @@ export enum ReferenceType {
 };
 
 export interface Reference {
-	type: ReferenceType;
 	key(): string;
 	label(): string;
 	toHayagriva(): Object;
 };
+
+export interface ReferenceRecord {
+    type: ReferenceType;
+}
+
+export interface WebRecord extends ReferenceRecord {
+    type: ReferenceType.Web,
+	url: string,
+	title: string,
+	visited: string,
+	date: string,
+	author?: string,
+}
 
 function getFirstWord(name: string): string {
 	const parts = name.split(" ");
@@ -20,25 +32,28 @@ function getLastWord(name: string): string {
 	return parts[parts.length - 1];
 }
 
+export function recordToReference(r: ReferenceRecord) {
+    switch (r.type) {
+        case ReferenceType.Web:
+            return new WebReference(r as WebRecord);
+        default:
+            throw new Error("unknown record type: " + r.type);
+    }
+}
+
 export class WebReference implements Reference {
-	type = ReferenceType.Web;
+    private url: string;
+    private title: string;
+    private author?: string;
+    private date: Date;
+    private visited: Date;
 
-	constructor(
-		readonly url: string,
-		readonly title: string,
-		readonly visited: Date,
-		readonly date: Date,
-		readonly author?: string,
-	) {}
-
-	static from(ref: WebReference): WebReference {
-		return new WebReference(
-			ref.url,
-			ref.title,
-			ref.visited,
-			ref.date,
-			ref.author
-		);
+	constructor(record: WebRecord) {
+	    this.url = record.url;
+	    this.author = record.author;
+	    this.title = record.title;
+	    this.date = new Date(record.date);
+	    this.visited = new Date(record.visited);
 	}
 
 	key(): string {
@@ -64,7 +79,7 @@ export class WebReference implements Reference {
 
 	toHayagriva(): Object {
 		return {
-			type: this.type,
+			type: ReferenceType.Web,
 			title: this.title,
 			author: this.author,
 			date: this.date.toISOString().split("T")[0],
@@ -76,6 +91,7 @@ export class WebReference implements Reference {
 	}
 };
 
+/*
 export class BookReference implements Reference {
 	type = ReferenceType.Book;
 
@@ -136,4 +152,4 @@ export class BookReference implements Reference {
 		};
 	}
 };
-
+*/
