@@ -7,7 +7,7 @@ use Illuminate\Process\Exceptions\ProcessFailedException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Process;
 
-class TypstCompilerService
+class TypstCompiler
 {
     public function __construct()
     {

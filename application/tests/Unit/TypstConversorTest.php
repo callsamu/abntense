@@ -1,11 +1,11 @@
 <?php
 
-use App\Services\TypstConversorService;
+use App\Services\TypstConversor;
 
 
 
 test('Conversion from Tiptap JSON', function () {
-    $typst = new TypstConversorService();
+    $typst = new TypstConversor();
     $document = $typst->convertTiptap([
         'type' => 'doc',
         'content' => [
@@ -62,7 +62,7 @@ test('Conversion from Tiptap JSON', function () {
 });
 
 test('Conversion of Pretextual Elements', function () {
-    $typst = new TypstConversorService();
+    $typst = new TypstConversor();
     $document = $typst->convertTiptap([
         "type" => "doc",
         "content" => [

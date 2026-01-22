@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class TypstConversorService
+class TypstConversor
 {
     private $pretextual_elements = [
         'Agradecimentos',
@@ -68,7 +68,7 @@ class TypstConversorService
             return $text;
         }
 
-        return TypstConversorService::convert_node($document);
+        return TypstConversor::convert_node($document);
     }
     public function convert(Document $document) {
         $title = $document->title;

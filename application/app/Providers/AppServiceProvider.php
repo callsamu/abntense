@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Services\TypstCompilerService;
-use App\Services\TypstConversorService;
+use App\Services\TypstCompiler;
+use App\Services\TypstConversor;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -16,13 +16,13 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(
-            TypstConversorService::class,
-            fn (Application $app) => new TypstConversorService()
+            TypstConversor::class,
+            fn (Application $app) => new TypstConversor()
         );
 
         $this->app->singleton(
-            TypstCompilerService::class,
-            fn (Application $app) => new TypstCompilerService()
+            TypstCompiler::class,
+            fn (Application $app) => new TypstCompiler()
         );
     }
 

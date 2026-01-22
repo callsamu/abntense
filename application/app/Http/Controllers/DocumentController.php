@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
-use App\Services\TypstCompilerService;
-use App\Services\TypstConversorService;
+use App\Services\TypstCompiler;
+use App\Services\TypstConversor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -94,9 +94,9 @@ class DocumentController extends Controller
     }
 
     public function compile(
-        string $id,
-        TypstCompilerService $compiler,
-        TypstConversorService $conversor
+        string                $id,
+        TypstCompiler         $compiler,
+        TypstConversor $conversor
     ) {
         $document = Document::findOrFail($id);
         $typst = $conversor->convert($document);
